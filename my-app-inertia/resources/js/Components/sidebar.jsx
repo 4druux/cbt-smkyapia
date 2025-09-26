@@ -1,0 +1,400 @@
+import { useEffect, useState } from "react";
+import {
+    Users,
+    ChevronDown,
+    HomeIcon,
+    ClipboardList,
+    UserCog,
+} from "lucide-react";
+import { Link } from "@inertiajs/react";
+import { motion, AnimatePresence } from "framer-motion";
+import { usePage } from "@inertiajs/react";
+
+const Sidebar = ({ isOpen }) => {
+    const [openSubMenu, setOpenSubMenu] = useState(null);
+    const { auth = { user: null } } = usePage().props;
+
+    const userRole = auth.user?.role;
+    const normalizedRole = userRole
+        ? userRole.toLowerCase().replace(" ", "")
+        : null;
+
+    const hasAccess = (allowedRoles) => {
+        if (!normalizedRole) return false;
+        return allowedRoles.includes(normalizedRole);
+    };
+
+    useEffect(() => {
+        const handleResize = () => {
+            if (window.innerWidth >= 1280) {
+                document.body.style.overflow = "unset";
+            } else {
+                if (isOpen) {
+                    document.body.style.overflow = "hidden";
+                } else {
+                    document.body.style.overflow = "unset";
+                }
+            }
+        };
+
+        window.addEventListener("resize", handleResize);
+        handleResize();
+
+        return () => window.removeEventListener("resize", handleResize);
+    }, [isOpen]);
+
+    const getIsActive = (href) => {
+        const pathname = window.location.pathname;
+
+        if (href === "/beranda") {
+            return pathname === "/beranda" || pathname.startsWith("/beranda/");
+        }
+
+        return pathname === href || pathname.startsWith(href + "/");
+    };
+
+    const menuItems = [
+        {
+            id: "home",
+            label: "Beranda",
+            icon: HomeIcon,
+            description: "Halaman utama",
+            href: "/",
+            canView: !!auth.user,
+        },
+        {
+            id: "data-siswa",
+            label: "Data Kelas & Siswa",
+            icon: Users,
+            description: "Kelola data kelas & siswa",
+            href: "/data-siswa",
+            canView: auth.user && hasAccess("admin"),
+        },
+        {
+            id: "manajemen-akun",
+            label: "Manajemen Akun",
+            icon: UserCog,
+            description: "Kelola akun pengguna",
+            href: "/manajemen-akun",
+            canView: auth.user && hasAccess("admin"),
+        },
+        {
+            id: "manajemen-ruangan",
+            label: "Manajemen Ruangan",
+            icon: ClipboardList,
+            description: "Kelola Ruangan Pengawas & siswa",
+            href: "/manajemen-ruangan",
+            canView: auth.user && hasAccess("admin"),
+        },
+
+        {
+            id: "kelola-ujian",
+            label: "Ujian Online",
+            icon: ClipboardList,
+            description: "Kelola Ujian Online",
+            href: "/kelola-ujian",
+            canView: auth.user && hasAccess(["admin", "pengawas"]),
+        },
+        {
+            id: "ujian-online",
+            label: "Ujian Online",
+            icon: ClipboardList,
+            description: "Mulai Ujian Online",
+            canView: auth.user && hasAccess("siswa"),
+            subMenu: [
+                {
+                    id: "uts",
+                    label: "UTS",
+                    href: "/uts",
+                },
+                {
+                    id: "uas",
+                    label: "UAS",
+                    href: "/uas",
+                },
+            ],
+        },
+    ];
+
+    const listVariants = {
+        visible: {
+            transition: {
+                staggerChildren: 0.1,
+                delayChildren: 0.2,
+            },
+        },
+        hidden: {},
+    };
+
+    const itemVariants = {
+        visible: {
+            opacity: 1,
+            x: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 12,
+            },
+        },
+        hidden: {
+            opacity: 0,
+            x: -20,
+        },
+    };
+
+    const footerVariants = {
+        visible: {
+            opacity: 1,
+            y: 0,
+            transition: {
+                type: "spring",
+                stiffness: 100,
+                damping: 12,
+                delay: 0.5,
+            },
+        },
+        hidden: {
+            opacity: 0,
+            y: 20,
+        },
+    };
+
+    return (
+        <aside
+            className={`
+        fixed top-0 left-0 bg-white shadow-lg z-50 rounded-r-2xl md:rounded-xl border transition-transform duration-300 ease-in-out w-[270px] 
+        h-full md:h-[calc(93vh-2.5rem)] md:top-24
+        ${isOpen ? "translate-x-0 md:left-6" : "-translate-x-full"}`}
+        >
+            <div className="h-full flex flex-col">
+                <div className="pt-6 px-4">
+                    <div className="flex items-center gap-2 md:gap-4">
+                        <div>
+                            <h1 className="text-md md:text-lg uppercase font-medium text-neutral-700">
+                                S** ***** {new Date().getFullYear()}
+                            </h1>
+                            <p className="text-xs md:text-sm text-neutral-600">
+                                Ujian Online
+                            </p>
+                        </div>
+                    </div>
+                    <hr className="mt-4" />
+                </div>
+
+                <nav className="flex-1 p-3 md:p-5 overflow-y-auto">
+                    <AnimatePresence>
+                        {isOpen && (
+                            <motion.ul
+                                className="space-y-2"
+                                initial="hidden"
+                                animate="visible"
+                                exit="hidden"
+                                variants={listVariants}
+                            >
+                                {menuItems.map((item) => {
+                                    if (!item.canView) return null;
+
+                                    const Icon = item.icon;
+                                    const isParentActive =
+                                        item.subMenu &&
+                                        item.subMenu.some((subItem) =>
+                                            getIsActive(subItem.href)
+                                        );
+
+                                    if (item.subMenu) {
+                                        return (
+                                            <motion.li
+                                                key={item.id}
+                                                variants={itemVariants}
+                                            >
+                                                <div
+                                                    className={`w-full flex items-center border-l-4 justify-between p-4 rounded-2xl transition-all duration-200 text-left cursor-pointer group ${
+                                                        isParentActive
+                                                            ? "bg-indigo-100 border-indigo-500"
+                                                            : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 border-transparent"
+                                                    }`}
+                                                    onClick={() =>
+                                                        setOpenSubMenu(
+                                                            openSubMenu ===
+                                                                item.id
+                                                                ? null
+                                                                : item.id
+                                                        )
+                                                    }
+                                                >
+                                                    <div className="flex items-center space-x-2 md:space-x-3">
+                                                        <Icon
+                                                            className={`w-7 h-7 ${
+                                                                isParentActive
+                                                                    ? "text-indigo-600"
+                                                                    : "text-neutral-600"
+                                                            }`}
+                                                        />
+                                                        <div className="flex-1">
+                                                            <div
+                                                                className={`font-medium text-sm ${
+                                                                    isParentActive
+                                                                        ? "text-indigo-600"
+                                                                        : ""
+                                                                }`}
+                                                            >
+                                                                {item.label}
+                                                            </div>
+                                                            <div
+                                                                className={`text-xs ${
+                                                                    isParentActive
+                                                                        ? "text-indigo-600"
+                                                                        : "text-neutral-500 group-hover:text-neutral-800"
+                                                                }`}
+                                                            >
+                                                                {
+                                                                    item.description
+                                                                }
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                    <ChevronDown
+                                                        className={`w-5 h-5 transition-transform duration-200 ${
+                                                            openSubMenu ===
+                                                            item.id
+                                                                ? "rotate-180"
+                                                                : ""
+                                                        } ${
+                                                            isParentActive
+                                                                ? "text-indigo-600"
+                                                                : "text-neutral-600"
+                                                        }`}
+                                                    />
+                                                </div>
+                                                <AnimatePresence>
+                                                    {openSubMenu ===
+                                                        item.id && (
+                                                        <motion.ul
+                                                            initial={{
+                                                                height: 0,
+                                                                opacity: 0,
+                                                                marginTop: 0,
+                                                            }}
+                                                            animate={{
+                                                                height: "auto",
+                                                                opacity: 1,
+                                                                marginTop:
+                                                                    "0.5rem",
+                                                            }}
+                                                            exit={{
+                                                                height: 0,
+                                                                opacity: 0,
+                                                                marginTop: 0,
+                                                            }}
+                                                            className="pl-8 space-y-1 overflow-hidden"
+                                                        >
+                                                            {item.subMenu.map(
+                                                                (subItem) => {
+                                                                    const isSubActive =
+                                                                        getIsActive(
+                                                                            subItem.href
+                                                                        );
+                                                                    return (
+                                                                        <li
+                                                                            key={
+                                                                                subItem.id
+                                                                            }
+                                                                        >
+                                                                            <Link
+                                                                                href={
+                                                                                    subItem.href
+                                                                                }
+                                                                                className={`w-full flex p-3 items-center rounded-xl text-left ${
+                                                                                    isSubActive
+                                                                                        ? "bg-indigo-100 text-indigo-600 font-medium"
+                                                                                        : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 hover:translate-x-1 transition-transform duration-300 will-change-transform"
+                                                                                }`}
+                                                                            >
+                                                                                <span className="text-sm">
+                                                                                    {
+                                                                                        subItem.label
+                                                                                    }
+                                                                                </span>
+                                                                            </Link>
+                                                                        </li>
+                                                                    );
+                                                                }
+                                                            )}
+                                                        </motion.ul>
+                                                    )}
+                                                </AnimatePresence>
+                                            </motion.li>
+                                        );
+                                    }
+
+                                    const isActive = getIsActive(item.href);
+                                    return (
+                                        <motion.li
+                                            key={item.id}
+                                            variants={itemVariants}
+                                        >
+                                            <Link
+                                                href={item.href}
+                                                className={`w-full flex items-center border-l-4 space-x-2 md:space-x-3 p-4 rounded-2xl transition-all duration-200 text-left cursor-pointer group ${
+                                                    isActive
+                                                        ? "bg-indigo-100 border-indigo-500"
+                                                        : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 border-transparent"
+                                                }`}
+                                            >
+                                                <Icon
+                                                    className={`w-7 h-7 ${
+                                                        isActive
+                                                            ? "text-indigo-600"
+                                                            : "text-neutral-600"
+                                                    }`}
+                                                />
+                                                <div className="flex-1">
+                                                    <div
+                                                        className={`font-medium text-sm ${
+                                                            isActive
+                                                                ? "text-indigo-600"
+                                                                : ""
+                                                        }`}
+                                                    >
+                                                        {item.label}
+                                                    </div>
+                                                    <div
+                                                        className={`text-xs ${
+                                                            isActive
+                                                                ? "text-indigo-600"
+                                                                : "text-neutral-500 group-hover:text-neutral-800"
+                                                        }`}
+                                                    >
+                                                        {item.description}
+                                                    </div>
+                                                </div>
+                                            </Link>
+                                        </motion.li>
+                                    );
+                                })}
+                            </motion.ul>
+                        )}
+                    </AnimatePresence>
+                </nav>
+
+                <AnimatePresence>
+                    {isOpen && (
+                        <div className="p-4 border-t border-gray-200">
+                            <motion.div
+                                initial="hidden"
+                                animate="visible"
+                                exit="hidden"
+                                variants={footerVariants}
+                                className="text-xs uppercase text-neutral-500 text-center"
+                            >
+                                smk yapia &copy; {new Date().getFullYear()}
+                            </motion.div>
+                        </div>
+                    )}
+                </AnimatePresence>
+            </div>
+        </aside>
+    );
+};
+
+export default Sidebar;

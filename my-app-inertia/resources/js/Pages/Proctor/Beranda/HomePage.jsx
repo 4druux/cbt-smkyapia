@@ -1,0 +1,17 @@
+import PageContent from "@/Components/ui/page-content";
+
+const HomePage = () => {
+    const breadcrumbItems = [{ label: "Beranda", href: route("home") }];
+
+    return (
+        <>
+            <PageContent breadcrumbItems={breadcrumbItems} pageClassName="mt-4">
+                <h1 className="text-md md:text-lg font-medium text-neutral-700 mb-4 md:mb-6">
+                    Selamat Datang
+                </h1>
+            </PageContent>
+        </>
+    );
+};
+
+export default HomePage;
