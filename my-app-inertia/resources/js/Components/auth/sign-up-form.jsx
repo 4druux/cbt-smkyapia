@@ -3,9 +3,10 @@ import { router } from "@inertiajs/react";
 import InputField from "@/Components/common/input-field";
 import PasswordField from "@/Components/common/password-field";
 import toast from "react-hot-toast";
-import { register } from "@/Utils/api";
 import Button from "../ui/button";
 import { Loader2, LogIn } from "lucide-react";
+import axios from "axios";
+import Select from "../common/select";
 
 export default function SignUpForm() {
     const [values, setValues] = useState({
@@ -13,6 +14,7 @@ export default function SignUpForm() {
         email: "",
         password: "",
         password_confirmation: "",
+        role: "",
     });
     const [errors, setErrors] = useState({});
     const [isSubmitting, setIsSubmitting] = useState(false);
@@ -28,12 +30,13 @@ export default function SignUpForm() {
         setErrors({});
 
         try {
-            await register(values);
-            toast.success("Registrasi berhasil! Silakan login.");
+            const response = await axios.post(route("api.register"), values);
+            toast.success(response.data.message);
+
             router.visit(route("login"));
         } catch (error) {
-            if (error.status === 422) {
-                setErrors(error.data.errors);
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
                 toast.error("Gagal mendaftar, periksa kembali data Anda.");
             } else {
                 toast.error("Terjadi kesalahan pada server.");
@@ -42,6 +45,11 @@ export default function SignUpForm() {
             setIsSubmitting(false);
         }
     };
+
+    const roleOptions = [
+        { value: "admin", label: "Admin" },
+        { value: "pengawas", label: "Pengawas" },
+    ];
 
     return (
         <div className="w-full max-w-md px-4 md:px-0">
@@ -56,7 +64,7 @@ export default function SignUpForm() {
                     Silakan daftar akun Anda, dan mulai menggunakan aplikasi.
                 </p>
             </div>
-            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
                 <InputField
                     id="name"
                     name="name"
@@ -77,6 +85,28 @@ export default function SignUpForm() {
                     error={errors.email}
                     required
                 />
+
+                <div>
+                    <label className="text-sm font-medium text-neutral-600 mb-1 block">
+                        Daftar sebagai
+                    </label>
+                    <Select
+                        title="Pilih Role"
+                        description="Role yang akan digunakan untuk menggunakan aplikasi."
+                        options={roleOptions}
+                        value={values.role}
+                        onChange={(value) =>
+                            setValues((prevValues) => ({
+                                ...prevValues,
+                                role: value,
+                            }))
+                        }
+                        isSearchable={false}
+                        error={errors.role?.[0]}
+                        placeholder="-- Pilih Role --"
+                    />
+                </div>
+
                 <PasswordField
                     id="password"
                     name="password"

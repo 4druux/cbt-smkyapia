@@ -3,9 +3,9 @@ import { router } from "@inertiajs/react";
 import InputField from "@/Components/common/input-field";
 import PasswordField from "@/Components/common/password-field";
 import toast from "react-hot-toast";
-import { login } from "@/Utils/api";
 import { Loader2, LogIn } from "lucide-react";
 import Button from "../ui/button";
+import axios from "axios";
 
 export default function SignInForm() {
     const [values, setValues] = useState({ email: "", password: "" });
@@ -23,13 +23,16 @@ export default function SignInForm() {
         setErrors({});
 
         try {
-            await login(values);
+            await axios.post(route("api.login"), values);
+
             toast.success("Login berhasil!");
             router.visit(route("home"));
         } catch (error) {
-            if (error.status === 422) {
-                setErrors(error.data.errors);
-                toast.error(error.data.message || "Email atau password salah.");
+            if (error.response && error.response.status === 422) {
+                setErrors(error.response.data.errors);
+                toast.error(
+                    error.response.data.message || "Email atau password salah."
+                );
             } else {
                 toast.error("Terjadi kesalahan pada server.");
             }
@@ -51,12 +54,12 @@ export default function SignInForm() {
                     Silakan masuk ke akun Anda, dan mulai menggunakan aplikasi.
                 </p>
             </div>
-            <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
+            <form className="mt-8 space-y-6" onSubmit={handleSubmit} noValidate>
                 <InputField
                     id="email"
                     name="email"
-                    label="Email"
-                    type="email"
+                    label="Email atau NIS"
+                    type="text"
                     value={values.email}
                     onChange={handleChange}
                     error={errors.email}

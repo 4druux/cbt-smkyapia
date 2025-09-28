@@ -7,6 +7,7 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
@@ -14,37 +15,66 @@ class AuthController extends Controller
 {
     public function register(Request $request)
     {
-        $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => ['required', 'confirmed', Rules\Password::defaults()],
-        ]);
+        $isFirstUser = User::count() === 0;
 
-        $isAdmin = User::count() === 0;
-
+        if ($isFirstUser) {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+            ]);
+        } else {
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|string|email|max:255|unique:users',
+                'password' => ['required', 'confirmed', Rules\Password::defaults()],
+                'role' => ['required', Rule::in(['admin', 'pengawas'])], 
+            ]);
+        }
+    
         $user = User::create([
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $isAdmin ? 'admin' : 'pengawas',
+            'role' => $isFirstUser ? 'superadmin' : $request->role,
+            'approved_at' => $isFirstUser ? now() : null, 
         ]);
 
-        return response()->json([
-            'message' => 'Registrasi berhasil! Silakan login.',
-            'user' => $user
-        ], 201);
+        $message = $isFirstUser
+            ? 'Registrasi Super Admin berhasil! Silakan login.'
+            : 'Registrasi berhasil! Akun Anda sedang menunggu persetujuan Super Admin.';
+
+        return response()->json(['message' => $message], 201);
     }
 
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|string|email',
+            'email' => 'required|string',
             'password' => 'required|string',
         ]);
 
-        if (!Auth::attempt($request->only('email', 'password'))) {
+        $loginField = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'nis';
+
+        $credentials = [
+            $loginField => $request->email,
+            'password' => $request->password
+        ];
+
+        if (!Auth::attempt($credentials)) {
             throw ValidationException::withMessages([
                 'email' => __('auth.failed'),
+            ]);
+        }
+
+        $user = Auth::user();
+        if (is_null($user->approved_at) && $user->role !== 'superadmin') { 
+            Auth::guard('web')->logout();
+            $request->session()->invalidate();
+            $request->session()->regenerateToken();
+
+            throw ValidationException::withMessages([
+                'email' => 'Akun Anda sedang menunggu persetujuan Super Admin.',
             ]);
         }
 
@@ -52,7 +82,7 @@ class AuthController extends Controller
 
         return response()->json([
             'message' => 'Login berhasil!',
-            'user' => Auth::user()
+            'user' => $user
         ]);
     }
 

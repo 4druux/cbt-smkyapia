@@ -1,21 +1,27 @@
 <?php
 
-
 use Illuminate\Support\Facades\Route;
 use Inertia\Inertia;
 
-
-Route::get('/login', function () { return Inertia::render('Auth/LoginPage'); })->name('login');
-Route::get('/register', function () { return Inertia::render('Auth/RegisterPage'); })->name('register');
-
+Route::inertia('/login', 'Auth/LoginPage')->name('login')->middleware('guest');
+Route::inertia('/register', 'Auth/RegisterPage')->name('register')->middleware('guest');
 
 Route::middleware(['auth', 'prevent.caching'])->group(function () {
-    Route::get('/', function () { return Inertia::render('Proctor/Beranda/HomePage'); })->name('home');
-    Route::get('/data-siswa', function () { return Inertia::render('Proctor/DataSiswa/AllClass'); })->name('data-siswa');
-    Route::get('/manajemen-ruangan', function () { return Inertia::render('Proctor/ManajemenRuangan/HomePage'); })->name('manajemen-ruangan');
-    Route::get('/manajemen-akun', function () { return Inertia::render('Proctor/ManajemenAkun/HomePage'); })->name('manajemen-akun');
-    Route::get('/kelola-ujian', function () { return Inertia::render('Proctor/KelolaUjian/HomePage'); })->name('kelola-ujian');
-    Route::get('/ujian-online', function () { return Inertia::render('Student/UjianOnline/HomePage'); })->name('ujian-online');
+    Route::inertia('/', 'HomePage')->name('home');
+
+    Route::prefix('data-siswa')->name('data-siswa.')->group(function () {
+        Route::inertia('/', 'Proctor/DataSiswa/AllClass')->name('index');
+        Route::inertia('/input', 'Proctor/DataSiswa/InputData')->name('input');
+        Route::inertia('/show', 'Proctor/DataSiswa/ShowClass')->name('show');
+    });
+
+    Route::prefix('manajemen-akun')->name('manajemen-akun.')->group(function () {
+    Route::inertia('/', 'Proctor/ManajemenAkun/AllAccount')->name('index');
+    Route::inertia('/show', 'Proctor/ManajemenAkun/ShowAccount')->name('show');
+    });
+    Route::inertia('/manajemen-ruangan', 'Proctor/ManajemenRuangan/HomePage')->name('manajemen-ruangan');
+    Route::inertia('/kelola-ujian', 'Proctor/KelolaUjian/HomePage')->name('kelola-ujian');
+    Route::inertia('/ujian-online', 'Student/UjianOnline/HomePage')->name('ujian-online');
 });
 
 Route::fallback(function () {

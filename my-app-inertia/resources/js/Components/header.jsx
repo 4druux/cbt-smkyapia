@@ -2,10 +2,10 @@ import { Menu, Settings, LogOut } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useDropdown, dropdownAnimation } from "@/Hooks/use-dropdown";
 import { usePage, Link } from "@inertiajs/react";
-import { logout } from "@/Utils/api";
 import { useState } from "react";
 import DotLoader from "./ui/dot-loader";
 import toast from "react-hot-toast";
+import axios from "axios";
 
 const Header = ({ onMenuClick }) => {
     const { isOpen, setIsOpen, dropdownRef } = useDropdown();
@@ -17,7 +17,7 @@ const Header = ({ onMenuClick }) => {
         setIsOpen(false);
         setIsLoggingOut(true);
 
-        const logoutPromise = logout();
+        const logoutPromise = axios.post(route("api.logout"));
 
         toast.promise(logoutPromise, {
             loading: "Sedang keluar...",
@@ -25,7 +25,11 @@ const Header = ({ onMenuClick }) => {
                 window.location.href = route("login");
                 return "Anda berhasil keluar.";
             },
-            error: "Gagal keluar, coba lagi.",
+            error: (err) => {
+                console.error("Logout failed:", err);
+                window.location.href = route("login");
+                return "Gagal keluar, coba lagi.";
+            },
         });
     };
 
@@ -55,7 +59,7 @@ const Header = ({ onMenuClick }) => {
             )}
 
             <header className="md:py-3 md:px-6 text-gray-700 sticky top-0 z-30">
-                <div className="flex items-center justify-between bg-white md:border border-gray-300 rounded-xl md:shadow-sm py-3 md:px-4">
+                <div className="flex items-center justify-between bg-white md:border border-gray-300 rounded-lg md:shadow-sm py-3 md:px-4">
                     <div className="flex items-center gap-1">
                         {/* <img
                         src="/images/logo-jurusan.png"
@@ -73,7 +77,12 @@ const Header = ({ onMenuClick }) => {
                         >
                             <Menu className="w-4 h-4" />
                         </button>
-                        <h1 className="text-sm uppercase">dashboard</h1>
+                        <a
+                            href="/"
+                            className="text-sm uppercase hover:bg-gray-100 p-2 rounded-lg"
+                        >
+                            dashboard
+                        </a>
                     </div>
 
                     {auth.user ? (
