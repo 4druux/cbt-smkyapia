@@ -1,10 +1,28 @@
-import { useState, useMemo } from "react";
+import { useState, useMemo, useEffect } from "react";
 import useSWR from "swr";
 import toast from "react-hot-toast";
 import { fetcher, approveUser, rejectUser, resetPassword } from "@/Utils/api";
 
 export const useShowAccount = (role) => {
-    const swrKey = role ? `/api/users?role=${role}` : null;
+    const [isProcessing, setIsProcessing] = useState(false);
+    const [isModalOpen, setIsModalOpen] = useState(false);
+    const [selectedUser, setSelectedUser] = useState(null);
+    const [searchTerm, setSearchTerm] = useState("");
+    const [debouncedSearchTerm, setDebouncedSearchTerm] = useState(searchTerm);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setDebouncedSearchTerm(searchTerm);
+        }, 500);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, [searchTerm]);
+
+    const swrKey = role
+        ? `/api/users?role=${role}&search=${debouncedSearchTerm}`
+        : null;
     const {
         data: users,
         error,
@@ -12,10 +30,6 @@ export const useShowAccount = (role) => {
     } = useSWR(swrKey, fetcher, {
         revalidateOnFocus: false,
     });
-
-    const [isProcessing, setIsProcessing] = useState(false);
-    const [isModalOpen, setIsModalOpen] = useState(false);
-    const [selectedUser, setSelectedUser] = useState(null);
 
     const pendingUsers = useMemo(
         () => (users || []).filter((user) => !user.approved_at),
@@ -87,6 +101,14 @@ export const useShowAccount = (role) => {
         }
     };
 
+    const handleSearchChange = (e) => {
+        setSearchTerm(e.target.value);
+    };
+
+    const handleClearSearch = () => {
+        setSearchTerm("");
+    };
+
     const handleOpenModal = (user) => {
         setSelectedUser(user);
         setIsModalOpen(true);
@@ -106,10 +128,13 @@ export const useShowAccount = (role) => {
         isProcessing,
         isModalOpen,
         selectedUser,
+        searchTerm,
         handleApprove,
         handleReject,
         handleResetPassword,
         handleOpenModal,
         handleCloseModal,
+        handleSearchChange,
+        handleClearSearch,
     };
 };

@@ -85,7 +85,7 @@ class DataSiswaController extends Controller
         }
     }
 
-    public function storeSingleStudent(Request $request)
+    public function createSingleSiswa(Request $request)
     {
         $validated = $request->validate([
             'kelas_id' => 'required|exists:kelas,id',

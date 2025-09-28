@@ -15,11 +15,21 @@ class UserManagementController extends Controller
     {
         $validated = $request->validate([
             'role' => ['required', Rule::in(['admin', 'pengawas', 'siswa'])],
+            'search' => 'nullable|string',
         ]);
 
-        $users = User::where('role', $validated['role'])
-            ->orderBy('name', 'asc')
-            ->get();
+        $query = User::where('role', $validated['role']);
+
+        if ($request->filled('search')) {
+            $search = $request->input('search');
+            $query->where(function ($q) use ($search) {
+                $q->where('name', 'like', "%{$search}%")
+                ->orWhere('email', 'like', "%{$search}%")
+                ->orWhere('nis', 'like', "%{$search}%");
+            });
+        }
+
+        $users = $query->orderBy('name', 'asc')->get();
 
         return response()->json($users);
     }

@@ -66,7 +66,12 @@ const ShowClass = () => {
 
     const breadcrumbItems = [
         { label: "Data Siswa", href: route("data-siswa.index") },
-        { label: fullClassName || "Memuat...", href: null },
+        {
+            label: fullClassName
+                ? `${fullClassName} | ${tahunAjaran}`
+                : "Memuat...",
+            href: null,
+        },
     ];
 
     if (isLoading) {

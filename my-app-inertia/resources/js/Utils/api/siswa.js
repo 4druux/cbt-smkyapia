@@ -5,7 +5,7 @@ export const createSiswa = async (data) => {
     return response.data;
 };
 
-export const storeSingleStudent = async (data) => {
+export const createSingleSiswa = async (data) => {
     const response = await axios.post("/api/siswa/single", data);
     return response.data;
 };

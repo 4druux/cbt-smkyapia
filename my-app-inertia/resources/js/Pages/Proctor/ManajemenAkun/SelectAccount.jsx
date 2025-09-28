@@ -24,7 +24,7 @@ const accountTypes = [
     },
 ];
 
-const AllAccount = () => {
+const SelectAccount = () => {
     const breadcrumbItems = [
         { label: "Manajemen Akun", href: route("manajemen-akun.index") },
     ];
@@ -58,4 +58,4 @@ const AllAccount = () => {
     );
 };
 
-export default AllAccount;
+export default SelectAccount;

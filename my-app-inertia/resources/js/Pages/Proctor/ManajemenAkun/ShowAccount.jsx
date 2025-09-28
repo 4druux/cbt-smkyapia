@@ -9,6 +9,7 @@ import ShowAkunTable from "@/Components/manajemen-akun/show-akun-table";
 import ShowAkunCard from "@/Components/manajemen-akun/show-akun-card";
 import { useShowAccount } from "@/Hooks/useShowAccount";
 import ResetPasswordModal from "@/Components/manajemen-akun/reset-password-modal";
+import SearchBar from "@/Components/ui/search-bar";
 
 const accountTypes = {
     admin: { title: "Admin", IconComponent: UserCog },
@@ -27,11 +28,14 @@ const ShowAccount = () => {
         isProcessing,
         isModalOpen,
         selectedUser,
+        searchTerm,
         handleApprove,
         handleReject,
         handleResetPassword,
         handleOpenModal,
         handleCloseModal,
+        handleSearchChange,
+        handleClearSearch,
     } = useShowAccount(role);
 
     const account = accountTypes[role] || {
@@ -81,11 +85,21 @@ const ShowAccount = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <HeaderContent
-                Icon={account.IconComponent}
-                title={`Daftar Akun ${account.title}`}
-                description={`Kelola semua akun ${role} yang terdaftar di sistem.`}
-            />
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
+                <HeaderContent
+                    Icon={account.IconComponent}
+                    title={`Daftar Akun ${account.title}`}
+                    description={`Kelola semua akun ${role} yang terdaftar di sistem.`}
+                />
+
+                <SearchBar
+                    value={searchTerm}
+                    onChange={handleSearchChange}
+                    onClear={handleClearSearch}
+                    placeholder="Cari Nama, Email, atau NIS..."
+                    className="max-w-xs"
+                />
+            </div>
 
             {needsApproval && pendingUsers.length > 0 && (
                 <div className="mb-8">
@@ -114,7 +128,6 @@ const ShowAccount = () => {
                     </div>
                 </div>
             )}
-
             <div className="mb-6">
                 <h3 className="mb-4 text-lg font-medium text-neutral-700">
                     Daftar Pengguna Aktif
@@ -148,7 +161,6 @@ const ShowAccount = () => {
                     />
                 )}
             </div>
-
             <div className="mt-6 flex justify-start">
                 <Button
                     as="link"
@@ -160,7 +172,6 @@ const ShowAccount = () => {
                     Kembali
                 </Button>
             </div>
-
             <ResetPasswordModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}

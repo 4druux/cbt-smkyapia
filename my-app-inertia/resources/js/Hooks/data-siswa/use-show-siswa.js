@@ -9,7 +9,7 @@ import {
     deleteSiswa,
     fetcher,
     promoteStudents,
-    storeSingleStudent,
+    createSingleSiswa,
     updateSiswa,
 } from "@/Utils/api/index";
 
@@ -96,7 +96,7 @@ export const useShowSiswa = (classId, tahunAjaran) => {
                 nis: addStudentForm.nis,
                 jenis_kelamin: addStudentForm.jenis_kelamin,
             };
-            const response = await storeSingleStudent(payload);
+            const response = await createSingleSiswa(payload);
             toast.success(response.message);
             handleCloseAddStudentModal();
             mutate();

@@ -105,7 +105,7 @@ const ShowSiswaCard = ({
                                                     };
                                                     handleInputChange(event);
                                                 }}
-                                                className="form-radio h-4 w-4 text-sky-600 border-slate-300 focus:ring-sky-500"
+                                                className="form-radio h-4 w-4 text-indigo-600 border-slate-300 focus:ring-indigo-500"
                                             />
                                             <span>Laki-laki</span>
                                         </label>

@@ -15,33 +15,45 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 Route::middleware('auth:sanctum')->group(function () {
     // Jurusan
-    Route::get('/jurusan', [JurusanController::class, 'getJurusans']);
-    Route::post('/jurusan', [JurusanController::class, 'createJurusan']);
-    Route::delete('/jurusan/{jurusan}', [JurusanController::class, 'deleteJurusan']);
+    Route::controller(JurusanController::class)->prefix('jurusan')->group(function () {
+        Route::get('/', 'getJurusans');
+        Route::post('/', 'createJurusan');
+        Route::delete('/{jurusan}', 'deleteJurusan');
+    });
 
     // Kelas
-    Route::get('/kelas', [KelasController::class, 'getKelas']);
-    Route::get('/jurusan/{jurusan}/kelas', [KelasController::class, 'getKelasByJurusan']);
-    Route::get('/kelas/{kelas}', [KelasController::class, 'showKelas']);
-    Route::post('/kelas', [KelasController::class, 'createKelas']);
-    Route::delete('/kelas/{kelas}', [KelasController::class, 'deleteKelas']);
+    Route::controller(KelasController::class)->group(function () {
+        Route::prefix('kelas')->group(function () {
+            Route::get('/', 'getKelas');
+            Route::get('/{kelas}', 'showKelas');
+            Route::post('/', 'createKelas');
+            Route::delete('/{kelas}', 'deleteKelas');
+        });
+
+        Route::get('/jurusan/{jurusan}/kelas', 'getKelasByJurusan');
+    });
 
     // Academic Year
-    Route::get('/academic-years', [AcademicYearController::class, 'getAcademicYears']);
-    Route::post('/academic-years', [AcademicYearController::class, 'createAcademicYear']);
-    Route::delete('/academic-years/{year}', [AcademicYearController::class, 'deleteAcademicYear']);
+    Route::controller(AcademicYearController::class)->prefix('academic-years')->group(function () {
+        Route::get('/', 'getAcademicYears');
+        Route::post('/', 'createAcademicYear');
+        Route::delete('/{year}', 'deleteAcademicYear');
+    });
 
     // Siswa
-    Route::post('/siswa', [DataSiswaController::class, 'createSiswa']);
-    Route::post('/siswa/single', [DataSiswaController::class, 'storeSingleStudent']);
-    Route::put('/siswa/{siswa}', [DataSiswaController::class, 'updateSiswa']);
-    Route::delete('/siswa/{siswa}', [DataSiswaController::class, 'deleteSiswa']);
-    Route::post('/siswa/promote', [DataSiswaController::class, 'promoteStudents']);
+    Route::controller(DataSiswaController::class)->prefix('siswa')->group(function () {
+        Route::post('/', 'createSiswa');
+        Route::post('/single', 'createSingleSiswa');
+        Route::put('/{siswa}', 'updateSiswa');
+        Route::delete('/{siswa}', 'deleteSiswa');
+        Route::post('/promote', 'promoteStudents');
+    });
 
-    Route::prefix('users')->group(function () {
-        Route::get('/', [UserManagementController::class, 'index']); 
-        Route::post('/{user}/approve', [UserManagementController::class, 'approve']);
-        Route::put('/{user}/reset-password', [UserManagementController::class, 'resetPassword']);
-        Route::delete('/{user}', [UserManagementController::class, 'destroy']);
+    // Manajemen Akun
+    Route::controller(UserManagementController::class)->prefix('users')->group(function () {
+        Route::get('/', 'index');
+        Route::post('/{user}/approve', 'approve');
+        Route::put('/{user}/reset-password', 'resetPassword');
+        Route::delete('/{user}', 'destroy');
     });
 });

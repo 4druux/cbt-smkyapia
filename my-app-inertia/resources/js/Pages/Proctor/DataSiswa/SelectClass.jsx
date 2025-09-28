@@ -7,7 +7,7 @@ import PageContent from "@/Components/ui/page-content";
 import useAllClass from "@/Hooks/data-siswa/use-all-class";
 import { LucideGraduationCap, PlusCircle, School } from "lucide-react";
 
-const AllClass = () => {
+const SelectClass = () => {
     const { allKelas, isLoading, error, handleDelete } = useAllClass();
 
     const breadcrumbItems = [
@@ -135,4 +135,4 @@ const AllClass = () => {
     );
 };
 
-export default AllClass;
+export default SelectClass;
