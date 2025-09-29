@@ -1,26 +1,35 @@
-import { useEffect, useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
+import React, { useState, useEffect } from "react";
+import { motion, AnimatePresence } from "framer-motion";
 import { Loader2, Save, X } from "lucide-react";
-import PasswordField from "@/Components/common/password-field";
+import InputField from "@/Components/common/input-field";
 import Button from "@/Components/ui/button";
 
-const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
+const MapelModal = ({ isOpen, onClose, onSave, selectedMapel }) => {
     const [formData, setFormData] = useState({
-        new_password: "",
-        password_confirmation: "",
+        nama_mapel: "",
+        kode_mapel: "",
     });
     const [isSubmitting, setIsSubmitting] = useState(false);
     const [errors, setErrors] = useState({});
 
+    const isEditing = !!selectedMapel;
+
     useEffect(() => {
         if (isOpen) {
-            setFormData({
-                new_password: "",
-                password_confirmation: "",
-            });
+            if (isEditing) {
+                setFormData({
+                    nama_mapel: selectedMapel.nama_mapel || "",
+                    kode_mapel: selectedMapel.kode_mapel || "",
+                });
+            } else {
+                setFormData({
+                    nama_mapel: "",
+                    kode_mapel: "",
+                });
+            }
             setErrors({});
         }
-    }, [isOpen, user]);
+    }, [selectedMapel, isOpen]);
 
     useEffect(() => {
         if (isOpen) {
@@ -33,7 +42,7 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
         };
     }, [isOpen]);
 
-    const handleFormChange = (e) => {
+    const handleChange = (e) => {
         const { name, value } = e.target;
         setFormData((prev) => ({ ...prev, [name]: value }));
         if (errors[name]) {
@@ -47,15 +56,15 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
         setErrors({});
 
         let validationErrors = {};
-        if (!formData.new_password) {
-            validationErrors.new_password = "Password baru tidak boleh kosong.";
-        } else if (formData.new_password.length < 8) {
-            validationErrors.new_password =
-                "Password harus memiliki minimal 8 karakter.";
+        if (!formData.nama_mapel) {
+            validationErrors.nama_mapel = [
+                "Nama mata pelajaran tidak boleh kosong.",
+            ];
         }
-        if (formData.new_password !== formData.password_confirmation) {
-            validationErrors.password_confirmation =
-                "Konfirmasi password tidak cocok.";
+        if (!formData.kode_mapel) {
+            validationErrors.kode_mapel = [
+                "Kode mata pelajaran tidak boleh kosong.",
+            ];
         }
 
         if (Object.keys(validationErrors).length > 0) {
@@ -65,10 +74,7 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
         }
 
         try {
-            await onResetPassword(
-                formData.new_password,
-                formData.password_confirmation
-            );
+            await onSave(formData, selectedMapel?.id);
             onClose();
         } catch (err) {
             const serverErrors = err?.response?.data?.errors;
@@ -109,7 +115,9 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
                             <div className="border-b border-slate-300 px-4 pb-4 md:p-4">
                                 <div className="flex items-center justify-between">
                                     <h3 className="text-lg font-medium text-neutral-700">
-                                        Reset Password Pengguna
+                                        {isEditing
+                                            ? "Edit Mata Pelajaran"
+                                            : "Tambah Mata Pelajaran"}
                                     </h3>
                                     <div
                                         onClick={onClose}
@@ -120,39 +128,26 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
                                 </div>
                             </div>
                             <div className="flex flex-col space-y-4 p-4 md:space-y-6 md:p-6">
-                                {user && (
-                                    <p className="text-sm text-neutral-600">
-                                        Anda akan mereset password untuk
-                                        pengguna{" "}
-                                        <span className="font-semibold">
-                                            {user.name} -{" "}
-                                            {user.nis || user.email}.
-                                        </span>
-                                    </p>
-                                )}
-
-                                <PasswordField
-                                    id="new_password"
-                                    name="new_password"
-                                    label="Password Baru"
-                                    value={formData.new_password}
-                                    onChange={handleFormChange}
-                                    error={errors.new_password}
+                                <InputField
+                                    id="nama_mapel"
+                                    name="nama_mapel"
+                                    label="Nama Mata Pelajaran"
+                                    value={formData.nama_mapel}
+                                    onChange={handleChange}
+                                    error={errors?.nama_mapel?.[0]}
                                     disabled={isSubmitting}
                                     required
                                 />
-
-                                <PasswordField
-                                    id="password_confirmation"
-                                    name="password_confirmation"
-                                    label="Konfirmasi Password"
-                                    value={formData.password_confirmation}
-                                    onChange={handleFormChange}
-                                    error={errors.password_confirmation}
+                                <InputField
+                                    id="kode_mapel"
+                                    name="kode_mapel"
+                                    label="Kode Mata Pelajaran"
+                                    value={formData.kode_mapel}
+                                    onChange={handleChange}
+                                    error={errors?.kode_mapel?.[0]}
                                     disabled={isSubmitting}
                                     required
                                 />
-
                                 <div className="flex justify-end gap-2 pt-4">
                                     <Button
                                         type="button"
@@ -166,11 +161,7 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
                                     <Button
                                         type="submit"
                                         variant="primary"
-                                        disabled={
-                                            isSubmitting ||
-                                            !formData.new_password ||
-                                            !formData.password_confirmation
-                                        }
+                                        disabled={isSubmitting}
                                         iconLeft={
                                             isSubmitting ? (
                                                 <Loader2 className="h-4 w-4 animate-spin" />
@@ -180,8 +171,8 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
                                         }
                                     >
                                         {isSubmitting
-                                            ? "Mereset..."
-                                            : "Reset Password"}
+                                            ? "Menyimpan..."
+                                            : "Simpan"}
                                     </Button>
                                 </div>
                             </div>
@@ -193,4 +184,4 @@ const ResetPasswordModal = ({ isOpen, onClose, user, onResetPassword }) => {
     );
 };
 
-export default ResetPasswordModal;
+export default MapelModal;

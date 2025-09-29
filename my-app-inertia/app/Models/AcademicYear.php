@@ -9,4 +9,9 @@ class AcademicYear extends Model
 {
     use HasFactory;
     protected $fillable = ['year'];
+
+    public function siswas()
+    {
+        return $this->hasMany(Siswa::class);
+    }
 }

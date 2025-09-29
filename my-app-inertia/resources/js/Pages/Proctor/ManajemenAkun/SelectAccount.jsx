@@ -48,7 +48,7 @@ const SelectAccount = () => {
                         href={route("manajemen-akun.show", {
                             role: account.role,
                         })}
-                        icon={<account.IconComponent className="h-14 w-14" />}
+                        icon={<account.IconComponent className="h-12 w-12" />}
                         title={account.title}
                         description={account.description}
                     />

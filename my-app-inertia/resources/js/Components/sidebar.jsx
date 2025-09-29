@@ -79,14 +79,34 @@ const Sidebar = ({ isOpen }) => {
             canView: auth.user && hasAccess("superadmin", "admin"),
         },
         {
-            id: "manajemen-ruangan",
-            label: "Manajemen Ruangan",
+            id: "manajemen-ujian",
+            label: "Manajemen Ujian",
             icon: ClipboardList,
-            description: "Kelola Ruangan Pengawas & siswa",
-            href: "/manajemen-ruangan",
+            description: "Kelola Jadwal Ujian",
             canView: auth.user && hasAccess("superadmin", "admin"),
+            subMenu: [
+                {
+                    id: "sesi-ujian",
+                    label: "Sesi Ujian Siswa",
+                    href: "/sesi-ujian",
+                },
+                {
+                    id: "kelola-ruangan",
+                    label: "Kelola Ruangan",
+                    href: "/kelola-ruangan",
+                },
+                {
+                    id: "kelola-mapel",
+                    label: "Kelola Mapel",
+                    href: "/kelola-mapel",
+                },
+                {
+                    id: "kelola-pengawas",
+                    label: "Kelola Pengawas",
+                    href: "/kelola-pengawas",
+                },
+            ],
         },
-
         {
             id: "kelola-ujian",
             label: "Ujian Online",
@@ -182,7 +202,7 @@ const Sidebar = ({ isOpen }) => {
                     <hr className="mt-4" />
                 </div>
 
-                <nav className="flex-1 p-3 md:p-5 overflow-y-auto">
+                <nav className="flex-1 p-2 md:p-5 overflow-y-auto">
                     <AnimatePresence>
                         {isOpen && (
                             <motion.ul
@@ -209,7 +229,7 @@ const Sidebar = ({ isOpen }) => {
                                                 variants={itemVariants}
                                             >
                                                 <div
-                                                    className={`w-full flex items-center border-l-4 justify-between p-4 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
+                                                    className={`w-full flex items-center border-l-4 justify-between p-3 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
                                                         isParentActive
                                                             ? "bg-indigo-100 border-indigo-500"
                                                             : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 border-transparent"
@@ -223,7 +243,7 @@ const Sidebar = ({ isOpen }) => {
                                                         )
                                                     }
                                                 >
-                                                    <div className="flex items-center space-x-2 md:space-x-3">
+                                                    <div className="flex items-center space-x-2">
                                                         <Icon
                                                             className={`w-7 h-7 ${
                                                                 isParentActive
@@ -305,7 +325,7 @@ const Sidebar = ({ isOpen }) => {
                                                                                 href={
                                                                                     subItem.href
                                                                                 }
-                                                                                className={`w-full flex p-3 items-center rounded-lg text-left ${
+                                                                                className={`w-full flex p-2 items-center rounded-lg text-left ${
                                                                                     isSubActive
                                                                                         ? "bg-indigo-100 text-indigo-600 font-medium"
                                                                                         : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 hover:translate-x-1 transition-transform duration-300 will-change-transform"
@@ -336,7 +356,7 @@ const Sidebar = ({ isOpen }) => {
                                         >
                                             <Link
                                                 href={item.href}
-                                                className={`w-full flex items-center border-l-4 space-x-2 md:space-x-3 p-4 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
+                                                className={`w-full flex items-center border-l-4 space-x-2 p-3 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
                                                     isActive
                                                         ? "bg-indigo-100 border-indigo-500"
                                                         : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 border-transparent"

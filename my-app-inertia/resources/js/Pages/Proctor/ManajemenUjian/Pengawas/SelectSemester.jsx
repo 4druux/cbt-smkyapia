@@ -27,13 +27,35 @@ const SelectSemester = () => {
         ? `${kelasData.nama_kelas} ${kelasData.kelompok} - ${kelasData.jurusan.nama_jurusan}`
         : "";
 
+    const isSiswaRole = role === "siswa";
+
+    const backButtonHref = isSiswaRole
+        ? route("kelola-pengawas.class.index", { role })
+        : route("kelola-pengawas.year.index", { role });
+
     const breadcrumbItems = [
-        { label: "Pilih Peran", href: route("manajemen-ruangan.role.index") },
-        { label: `${role}`, href: route("manajemen-ruangan.role.index") },
-        {
-            label: fullClassName || "Memuat...",
-            href: route("manajemen-ruangan.class.index", { role }),
-        },
+        { label: "Pilih Peran", href: route("kelola-pengawas.index") },
+        { label: `${role}`, href: route("kelola-pengawas.index") },
+        ...(isSiswaRole
+            ? [
+                  {
+                      label: fullClassName || "Memuat...",
+                      href: route("kelola-pengawas.class.index", {
+                          role,
+                          kelas_id,
+                          tahun_ajaran,
+                      }),
+                  },
+              ]
+            : [
+                  {
+                      label: `Tahun Ajaran ${tahun_ajaran}`,
+                      href: route("kelola-pengawas.year.index", {
+                          role,
+                          tahun_ajaran,
+                      }),
+                  },
+              ]),
         {
             label: "Pilih Semester",
             href: null,
@@ -54,19 +76,24 @@ const SelectSemester = () => {
             <HeaderContent
                 Icon={BookCopy}
                 title="Pilih Semester"
-                details={studentDetails}
+                details={isSiswaRole ? studentDetails : undefined}
+                description={
+                    !isSiswaRole
+                        ? `Pilih semester untuk tahun ajaran ${tahun_ajaran}.`
+                        : undefined
+                }
             />
             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                 {semesters.map((semester) => (
                     <CardContent
                         key={semester.value}
-                        href={route("manajemen-ruangan.assessment.index", {
+                        href={route("kelola-pengawas.assessment.index", {
                             role,
                             kelas_id,
                             tahun_ajaran,
                             semester: semester.value,
                         })}
-                        icon={<semester.IconComponent className="h-14 w-14" />}
+                        icon={<semester.IconComponent className="h-12 w-12" />}
                         title={semester.label}
                         description={`Kelola ruangan ujian untuk semester ${semester.value}.`}
                     />
@@ -78,11 +105,7 @@ const SelectSemester = () => {
                     as="link"
                     size="lg"
                     variant="outline"
-                    href={route("manajemen-ruangan.class.index", {
-                        role,
-                        kelas_id,
-                        tahun_ajaran,
-                    })}
+                    href={backButtonHref}
                     iconLeft={<ArrowLeft className="h-5 w-5" />}
                 >
                     Kembali

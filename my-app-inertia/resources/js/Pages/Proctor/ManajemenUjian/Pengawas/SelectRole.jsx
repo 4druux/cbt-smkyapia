@@ -9,18 +9,21 @@ const accountTypes = [
         title: "Akun Admin",
         IconComponent: UserCog,
         description: "Kelola ruangan ujian untuk akun admin.",
+        href: route("kelola-pengawas.year.index", { role: "admin" }),
     },
     {
         role: "pengawas",
         title: "Akun Pengawas",
         IconComponent: Eye,
         description: "Kelola ruangan ujian untuk akun pengawas.",
+        href: route("kelola-pengawas.year.index", { role: "pengawas" }),
     },
     {
         role: "siswa",
         title: "Akun Siswa",
         IconComponent: UserLock,
         description: "Kelola ruangan ujian untuk akun siswa.",
+        href: route("kelola-pengawas.class.index", { role: "siswa" }),
     },
 ];
 
@@ -28,7 +31,7 @@ const SelectRole = () => {
     const breadcrumbItems = [
         {
             label: "Pilih Peran",
-            href: route("manajemen-ruangan.role.index"),
+            href: route("kelola-pengawas.index"),
         },
     ];
 
@@ -48,10 +51,8 @@ const SelectRole = () => {
                 {accountTypes.map((account) => (
                     <CardContent
                         key={account.role}
-                        href={route("manajemen-ruangan.class.index", {
-                            role: account.role,
-                        })}
-                        icon={<account.IconComponent className="h-14 w-14" />}
+                        href={account.href}
+                        icon={<account.IconComponent className="h-12 w-12" />}
                         title={account.title}
                         description={account.description}
                     />

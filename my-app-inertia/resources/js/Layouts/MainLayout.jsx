@@ -31,6 +31,20 @@ export default function MainLayout({ children, title }) {
         return () => window.removeEventListener("resize", handleResize);
     }, []);
 
+    useEffect(() => {
+        const handleNavigate = () => {
+            if (window.innerWidth < 768) {
+                setIsSidebarOpen(false);
+            }
+        };
+
+        const removeListener = router.on("navigate", handleNavigate);
+
+        return () => {
+            removeListener();
+        };
+    }, []);
+
     if (!auth.user) {
         return (
             <div className="fixed inset-0 flex items-center justify-center">

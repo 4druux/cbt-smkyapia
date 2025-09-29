@@ -38,4 +38,8 @@ class User extends Authenticatable
     {
         return $this->hasOne(Siswa::class);
     }
+
+    public function sesiUjians() {
+        return $this->belongsToMany(SesiUjian::class, 'sesi_ujian_peserta');
+    }
 }

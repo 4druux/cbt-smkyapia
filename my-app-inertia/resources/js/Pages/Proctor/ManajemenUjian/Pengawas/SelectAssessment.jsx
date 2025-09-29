@@ -38,16 +38,34 @@ const SelectAssessment = () => {
         ? `${kelasData.nama_kelas} ${kelasData.kelompok} - ${kelasData.jurusan.nama_jurusan}`
         : "";
 
+    const isSiswaRole = role === "siswa";
+
     const breadcrumbItems = [
-        { label: "Pilih Peran", href: route("manajemen-ruangan.role.index") },
-        { label: `${role}`, href: route("manajemen-ruangan.role.index") },
-        {
-            label: fullClassName ? `${fullClassName} ` : "Memuat...",
-            href: route("manajemen-ruangan.class.index", { role }),
-        },
+        { label: "Pilih Peran", href: route("kelola-pengawas.index") },
+        { label: `${role}`, href: route("kelola-pengawas.index") },
+        ...(isSiswaRole
+            ? [
+                  {
+                      label: fullClassName || "Memuat...",
+                      href: route("kelola-pengawas.class.index", {
+                          role,
+                          kelas_id,
+                          tahun_ajaran,
+                      }),
+                  },
+              ]
+            : [
+                  {
+                      label: `Tahun Ajaran ${tahun_ajaran}`,
+                      href: route("kelola-pengawas.year.index", {
+                          role,
+                          tahun_ajaran,
+                      }),
+                  },
+              ]),
         {
             label: `Semester ${semester}`,
-            href: route("manajemen-ruangan.semester.index", {
+            href: route("kelola-pengawas.semester.index", {
                 role,
                 kelas_id,
                 tahun_ajaran,
@@ -75,15 +93,15 @@ const SelectAssessment = () => {
                 {assessmentTypes.map((assessment) => (
                     <CardContent
                         key={assessment.value}
-                        // href={route("manajemen-ruangan.rooms.index", {
-                        //     role,
-                        //     kelas_id,
-                        //     tahun_ajaran,
-                        //     semester,
-                        //     type: assessment.value,
-                        // })}
+                        href={route("kelola-pengawas.assessment.show", {
+                            role,
+                            kelas_id,
+                            tahun_ajaran,
+                            semester,
+                            type: assessment.value,
+                        })}
                         icon={
-                            <assessment.IconComponent className="h-14 w-14" />
+                            <assessment.IconComponent className="h-12 w-12" />
                         }
                         title={assessment.label}
                         description={assessment.description}
@@ -96,7 +114,7 @@ const SelectAssessment = () => {
                     as="link"
                     size="lg"
                     variant="outline"
-                    href={route("manajemen-ruangan.semester.index", {
+                    href={route("kelola-pengawas.semester.index", {
                         role,
                         kelas_id,
                         tahun_ajaran,

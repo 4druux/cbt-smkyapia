@@ -1,5 +1,8 @@
 <?php
 
+use App\Http\Controllers\Api\ManajemenRuangan\MataPelajaranController;
+use App\Http\Controllers\Api\ManajemenRuangan\RuanganController;
+use App\Http\Controllers\Api\ManajemenRuangan\SesiUjianController;
 use App\Http\Controllers\Api\UserManagementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;
@@ -36,6 +39,7 @@ Route::middleware('auth:sanctum')->group(function () {
     // Academic Year
     Route::controller(AcademicYearController::class)->prefix('academic-years')->group(function () {
         Route::get('/', 'getAcademicYears');
+        Route::get('/with-classes', 'getAcademicYearsWithClasses');
         Route::post('/', 'createAcademicYear');
         Route::delete('/{year}', 'deleteAcademicYear');
     });
@@ -56,4 +60,9 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{user}/reset-password', 'resetPassword');
         Route::delete('/{user}', 'destroy');
     });
+
+    // Manajemen Ruangan
+    Route::apiResource('ruangan', RuanganController::class);
+    Route::apiResource('mata-pelajaran', MataPelajaranController::class);
+    Route::apiResource('sesi-ujian', SesiUjianController::class); 
 });

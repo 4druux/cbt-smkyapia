@@ -58,7 +58,7 @@ const SelectClass = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6 gap-4">
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6 md:gap-4">
                 <HeaderContent
                     Icon={LucideGraduationCap}
                     title="Daftar Kelas per Tahun Ajaran"
@@ -103,7 +103,7 @@ const SelectClass = () => {
                                                             }
                                                         )}
                                                         icon={
-                                                            <School className="h-14 w-14" />
+                                                            <School className="h-12 w-12" />
                                                         }
                                                         title={`${kelas.nama_kelas} ${kelas.kelompok}`}
                                                         subtitle={

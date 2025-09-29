@@ -120,7 +120,17 @@ const KenaikanKelasModal = ({
                                     isProcessing={isPromoting}
                                 />
 
-                                <div className="flex justify-end">
+                                <div className="flex justify-end gap-2 pt-4">
+                                    <Button
+                                        type="button"
+                                        variant="outline"
+                                        onClick={onClose}
+                                        disabled={isPromoting}
+                                        iconLeft={<X className="w-4 h-4" />}
+                                    >
+                                        Batal
+                                    </Button>
+
                                     <Button
                                         type="submit"
                                         variant="primary"

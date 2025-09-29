@@ -85,7 +85,7 @@ const ShowAccount = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6">
+            <div className="flex flex-col md:flex-row items-end md:items-start md:justify-between mb-6">
                 <HeaderContent
                     Icon={account.IconComponent}
                     title={`Daftar Akun ${account.title}`}

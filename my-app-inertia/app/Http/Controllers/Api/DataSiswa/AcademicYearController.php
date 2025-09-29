@@ -13,6 +13,15 @@ class AcademicYearController extends Controller
         return response()->json(AcademicYear::orderBy('year', 'desc')->get());
     }
 
+    public function getAcademicYearsWithClasses()
+    {
+        $years = AcademicYear::whereHas('siswas')
+                ->orderBy('year', 'desc')
+                ->get();
+
+        return response()->json($years);
+    }
+
     public function createAcademicYear(Request $request)
     {
         $validated = $request->validate([

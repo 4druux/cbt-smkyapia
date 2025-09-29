@@ -1,8 +1,8 @@
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Save, X } from "lucide-react";
-import Button from "../ui/button";
-import InputField from "../common/input-field";
+import Button from "@/Components/ui/button";
+import InputField from "@/Components/common/input-field";
 
 const AddStudentModal = ({
     isOpen,

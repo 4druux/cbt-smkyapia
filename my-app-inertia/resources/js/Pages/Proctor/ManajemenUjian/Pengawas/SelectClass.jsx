@@ -13,10 +13,10 @@ const SelectClass = () => {
     const { allKelas, isLoading, error } = useAllClass();
 
     const breadcrumbItems = [
-        { label: "Pilih Peran", href: route("manajemen-ruangan.role.index") },
-        { label: `${role}`, href: route("manajemen-ruangan.role.index") },
+        { label: "Pilih Peran", href: route("kelola-pengawas.index") },
+        { label: `${role}`, href: route("kelola-pengawas.index") },
         {
-            label: "Pilih Kelas",
+            label: "Pilih Kelas & Tahun Ajaran",
             href: null,
         },
     ];
@@ -49,7 +49,7 @@ const SelectClass = () => {
 
     return (
         <PageContent
-            pageTitle="Kelola Ruangan Ujian"
+            pageTitle="Pilih Kelas & Tahun Ajaran"
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
@@ -69,7 +69,7 @@ const SelectClass = () => {
                                     <CardContent
                                         key={kelas.kelas_id}
                                         href={route(
-                                            "manajemen-ruangan.semester.index",
+                                            "kelola-pengawas.semester.index",
                                             {
                                                 role: role,
                                                 kelas_id: kelas.kelas_id,
@@ -77,7 +77,7 @@ const SelectClass = () => {
                                                     kelas.tahun_ajaran,
                                             }
                                         )}
-                                        icon={<School className="h-14 w-14" />}
+                                        icon={<School className="h-12 w-12" />}
                                         title={`${kelas.nama_kelas} ${kelas.kelompok}`}
                                         subtitle={kelas.nama_jurusan}
                                     />
@@ -98,7 +98,7 @@ const SelectClass = () => {
                     as="link"
                     size="lg"
                     variant="outline"
-                    href={route("manajemen-ruangan.role.index")}
+                    href={route("kelola-pengawas.index")}
                     iconLeft={<ArrowLeft className="h-5 w-5" />}
                 >
                     Kembali
