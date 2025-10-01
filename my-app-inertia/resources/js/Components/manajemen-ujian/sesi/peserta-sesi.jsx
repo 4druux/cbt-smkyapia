@@ -3,13 +3,12 @@ import useSWR from "swr";
 import { fetcher } from "@/Utils/api";
 import Select from "@/Components/common/select";
 
-const PesertaSelector = ({ allUsers, selectedIds, onFormChange }) => {
+const PesertaSesi = ({ allUsers, selectedIds, onFormChange, errors }) => {
     const { data: allKelas } = useSWR("/api/kelas", fetcher);
     const [filterKelas, setFilterKelas] = useState("");
 
     const filteredUsers = useMemo(() => {
         if (!filterKelas) return allUsers;
-
         return allUsers.filter((user) => user.siswa?.kelas_id == filterKelas);
     }, [allUsers, filterKelas]);
 
@@ -27,14 +26,23 @@ const PesertaSelector = ({ allUsers, selectedIds, onFormChange }) => {
         })) || [];
 
     return (
-        <div className="space-y-4">
+        <div className="rounded-lg border p-3 md:p-6">
+            <h3 className="text-md font-medium text-gray-700 mb-4">
+                Pilih Peserta Ujian
+            </h3>
             <Select
                 label="Filter Siswa Berdasarkan Kelas"
                 options={kelasOptions}
+                title="Pilih Kelas"
+                description="Filter siswa berdasarkan kelas. Jika tidak dipilih, semua siswa akan ditampilkan."
                 value={filterKelas}
                 onChange={(val) => setFilterKelas(val)}
                 placeholder="Tampilkan Semua Siswa"
             />
+
+            <h3 className="mt-4 mb-2 text-sm text-gray-500">
+                Semua Daftar Peserta
+            </h3>
             <div className="max-h-72 overflow-y-auto rounded-lg border border-slate-300 p-2">
                 {filteredUsers.map((user) => (
                     <label
@@ -45,24 +53,33 @@ const PesertaSelector = ({ allUsers, selectedIds, onFormChange }) => {
                             type="checkbox"
                             checked={selectedIds.includes(user.id)}
                             onChange={() => handleToggle(user.id)}
-                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                            className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-0"
                         />
                         <div>
-                            <p className="font-medium text-neutral-800">
-                                {user.name}
+                            <p className="text-sm text-gray-700">
+                                {user.name} - {user.nis}
                             </p>
-                            <p className="text-sm text-neutral-500">
-                                {user.role === "siswa" ? user.nis : user.email}
+                            <p className="text-xs text-gray-500">
+                                {user.siswa?.kelas?.nama_kelas}{" "}
+                                {user.siswa?.kelas?.kelompok} |
+                                {user.siswa?.academic_year &&
+                                    ` ${user.siswa.academic_year.year}`}
                             </p>
                         </div>
                     </label>
                 ))}
             </div>
-            <p className="text-sm text-neutral-600">
+            <p className="text-sm text-gray-500 mt-2">
                 {selectedIds.length} peserta dipilih.
             </p>
+
+            {errors?.peserta_ids && (
+                <p className="text-xs text-red-500 mt-1">
+                    {errors.peserta_ids[0]}
+                </p>
+            )}
         </div>
     );
 };
 
-export default PesertaSelector;
+export default PesertaSesi;

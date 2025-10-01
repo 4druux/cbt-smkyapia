@@ -20,16 +20,27 @@ class UserManagementController extends Controller
 
         $query = User::where('role', $validated['role']);
 
+        if ($validated['role'] === 'siswa') {
+            $query->with(['currentSiswa.kelas', 'currentSiswa.academicYear']);
+        }
+
         if ($request->filled('search')) {
             $search = $request->input('search');
             $query->where(function ($q) use ($search) {
                 $q->where('name', 'like', "%{$search}%")
-                ->orWhere('email', 'like', "%{$search}%")
-                ->orWhere('nis', 'like', "%{$search}%");
+                    ->orWhere('email', 'like', "%{$search}%")
+                    ->orWhere('nis', 'like', "%{$search}%");
             });
         }
 
         $users = $query->orderBy('name', 'asc')->get();
+
+        $users->each(function ($user) {
+            if ($user->currentSiswa) {
+                $user->setRelation('siswa', $user->currentSiswa);
+                unset($user->currentSiswa);
+            }
+        });
 
         return response()->json($users);
     }

@@ -103,7 +103,7 @@ const ShowAccount = () => {
 
             {needsApproval && pendingUsers.length > 0 && (
                 <div className="mb-8">
-                    <h3 className="mb-4 text-lg font-medium text-neutral-700">
+                    <h3 className="mb-4 text-lg font-medium text-gray-700">
                         Persetujuan Pengguna Baru
                     </h3>
                     <div className="hidden lg:block">
@@ -129,7 +129,7 @@ const ShowAccount = () => {
                 </div>
             )}
             <div className="mb-6">
-                <h3 className="mb-4 text-lg font-medium text-neutral-700">
+                <h3 className="mb-4 text-lg font-medium text-gray-700">
                     Daftar Pengguna Aktif
                 </h3>
                 {approvedUsers.length > 0 ? (

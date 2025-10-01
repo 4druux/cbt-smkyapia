@@ -11,17 +11,17 @@ const MapelCard = ({ mapels, onEdit, onDelete, isProcessing }) => {
                 >
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-2">
-                            <p className="text-sm font-medium text-neutral-800">
+                            <p className="text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
                             <div className="flex flex-col gap-1">
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     <span className="font-normal">
                                         Mata Pelajaran:{" "}
                                     </span>
                                     {mapel.nama_mapel}
                                 </p>
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     <span className="font-normal">Kode: </span>
                                     {mapel.kode_mapel}
                                 </p>

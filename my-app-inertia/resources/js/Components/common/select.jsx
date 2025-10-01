@@ -7,13 +7,13 @@ import { dropdownAnimation, useDropdown } from "@/Hooks/use-dropdown";
 const Select = forwardRef(
     (
         {
+            id,
             label,
             mandatory = false,
             options = [],
             isSearchable = true,
             value,
             onChange,
-            placeholder = "Pilih Opsi",
             error = "",
             disabled = false,
             isLoading = false,
@@ -96,55 +96,70 @@ const Select = forwardRef(
         const selectedOptionLabel =
             options.find((opt) => opt.value === value)?.label || "";
 
-        return (
-            <div className="relative" ref={dropdownRef}>
-                {label && (
-                    <label className="block text-sm font-medium text-neutral-700">
-                        {label}{" "}
-                        {mandatory && <span className="text-red-600">*</span>}
-                    </label>
-                )}
-                <button
-                    type="button"
-                    onClick={() =>
-                        !disabled && !isLoading && setIsOpen(!isOpen)
-                    }
-                    disabled={disabled || isLoading}
-                    className={`mt-1 flex items-center justify-between w-full border rounded-lg py-2.5 px-3 text-left ${
-                        disabled || isLoading
-                            ? "bg-gray-100 cursor-not-allowed"
-                            : "bg-white cursor-pointer"
-                    } 
-                    ${
-                        error
-                            ? "border-red-500"
-                            : isOpen
-                            ? "border-indigo-500"
-                            : "border-slate-300"
-                    }`}
-                >
-                    <span className="flex items-center gap-2 text-sm">
-                        {isLoading ? (
-                            <span className="text-neutral-500">Memuat...</span>
-                        ) : value ? (
-                            <span className="text-neutral-900">
-                                {selectedOptionLabel}
-                            </span>
-                        ) : (
-                            <span className="text-neutral-400">
-                                {placeholder}
-                            </span>
-                        )}
-                    </span>
-                    <div
-                        className={`transition-transform ${
-                            isOpen ? "rotate-180" : ""
-                        }`}
-                    >
-                        <ChevronDown className="w-4 h-4 text-neutral-500" />
-                    </div>
-                </button>
+        const selectClasses = [
+            "flex items-center justify-between w-full rounded-lg border",
+            "px-3 py-3 text-left text-sm",
+            "focus:outline-none focus:ring-0",
+            disabled || isLoading
+                ? "bg-gray-100 cursor-not-allowed"
+                : "bg-white cursor-pointer",
+            error
+                ? "border-red-500"
+                : isOpen
+                ? "border-indigo-500"
+                : "border-gray-300",
+        ].join(" ");
 
+        const labelClasses = [
+            "pointer-events-none absolute left-3 transform px-1 text-sm",
+            "transition-all duration-200 ease-in-out",
+            disabled || isLoading
+                ? "bg-gray-100 cursor-not-allowed"
+                : "bg-white cursor-pointer",
+            value || isOpen
+                ? "top-0 -translate-y-1/2"
+                : "top-1/2 -translate-y-1/2",
+            error
+                ? "text-red-500"
+                : isOpen
+                ? "text-indigo-500"
+                : "text-gray-500",
+        ].join(" ");
+
+        return (
+            <div className="relative w-full" ref={dropdownRef}>
+                <div className="relative">
+                    <button
+                        type="button"
+                        id={id}
+                        onClick={() =>
+                            !disabled && !isLoading && setIsOpen(!isOpen)
+                        }
+                        disabled={disabled || isLoading}
+                        className={selectClasses}
+                    >
+                        <span className="flex items-center gap-2 text-sm text-gray-900">
+                            {isLoading ? (
+                                <span className="text-gray-500">Memuat...</span>
+                            ) : (
+                                selectedOptionLabel || <>&nbsp;</>
+                            )}
+                        </span>
+                        <div
+                            className={`transform transition-transform ${
+                                isOpen ? "rotate-180" : ""
+                            }`}
+                        >
+                            <ChevronDown className="h-4 w-4 text-gray-500" />
+                        </div>
+                    </button>
+                    <label htmlFor={id} className={labelClasses}>
+                        {label}
+                        {mandatory && (
+                            <span className="ml-1 text-red-600">*</span>
+                        )}
+                    </label>
+                </div>
                 <AnimatePresence>
                     {isOpen && (
                         <motion.div
@@ -164,7 +179,7 @@ const Select = forwardRef(
                                     <div className="px-3 sticky top-0 z-10 bg-white pt-1">
                                         <div className="flex items-start justify-between gap-2">
                                             {title && (
-                                                <span className="font-normal text-sm text-neutral-700">
+                                                <span className="font-normal text-sm text-gray-700">
                                                     {title}
                                                 </span>
                                             )}
@@ -179,11 +194,10 @@ const Select = forwardRef(
                                             )}
                                         </div>
                                         {description && (
-                                            <span className="block text-xs text-neutral-500 my-2">
+                                            <span className="block text-xs text-gray-500 my-2">
                                                 {description}
                                             </span>
                                         )}
-
                                         {isSearchable && (
                                             <div className="relative my-2">
                                                 <input
@@ -208,17 +222,15 @@ const Select = forwardRef(
                                                         onClick={
                                                             handleClearSearch
                                                         }
-                                                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-neutral-400 hover:text-neutral-600 cursor-pointer"
+                                                        className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-400 hover:text-gray-600 cursor-pointer"
                                                     >
                                                         <X className="h-4 w-4" />
                                                     </button>
                                                 )}
                                             </div>
                                         )}
-
                                         <div className="border-b-2 border-slate-200 mb-1" />
                                     </div>
-
                                     <div className="overflow-y-auto max-h-52 mt-1 py-1">
                                         {showAddNewOption && (
                                             <div
@@ -256,13 +268,12 @@ const Select = forwardRef(
                                                                 value ===
                                                                 option.value
                                                                     ? "text-indigo-600 font-semibold"
-                                                                    : "text-neutral-800"
+                                                                    : "text-gray-800"
                                                             }
                                                         >
                                                             {option.label}
                                                         </span>
                                                     </label>
-
                                                     <div className="flex items-center">
                                                         <input
                                                             type="radio"
@@ -293,7 +304,7 @@ const Select = forwardRef(
                                                                         option.value
                                                                     )
                                                                 }
-                                                                className="p-1 ml-3 text-neutral-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-20 cursor-pointer"
+                                                                className="p-1 ml-3 text-gray-400 hover:text-red-500 opacity-0 group-hover:opacity-100 transition-opacity disabled:opacity-20 cursor-pointer"
                                                             >
                                                                 <Trash2
                                                                     size={16}
@@ -304,7 +315,7 @@ const Select = forwardRef(
                                                 </div>
                                             ))
                                         ) : !showAddNewOption ? (
-                                            <div className="text-center text-sm text-neutral-500 p-3">
+                                            <div className="text-center text-sm text-gray-500 p-3">
                                                 Tidak ada hasil ditemukan.
                                             </div>
                                         ) : null}
@@ -314,8 +325,7 @@ const Select = forwardRef(
                         </motion.div>
                     )}
                 </AnimatePresence>
-
-                {error && <p className="text-xs text-red-500 mt-1">{error}</p>}
+                {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
             </div>
         );
     }

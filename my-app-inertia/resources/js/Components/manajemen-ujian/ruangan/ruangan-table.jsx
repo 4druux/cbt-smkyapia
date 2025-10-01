@@ -8,33 +8,39 @@ const RuanganTable = ({ ruangans, onEdit, onDelete, isProcessing }) => {
             <table className="w-full">
                 <thead className="bg-slate-50">
                     <tr>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="w-16 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                            No
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             Kode
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             Nama Ruangan
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             Kapasitas
                         </th>
-                        <th className="w-32 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="w-32 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
                             Aksi
                         </th>
                     </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-200">
-                    {ruangans.map((ruangan) => (
+                    {ruangans.map((ruangan, index) => (
                         <tr
                             key={ruangan.id}
                             className="even:bg-slate-50 hover:bg-slate-100"
                         >
-                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-neutral-800">
+                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
+                                {index + 1}.
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-700">
                                 {ruangan.kode_ruangan}
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500">
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                 {ruangan.nama_ruangan}
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500">
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                 {ruangan.kapasitas}
                             </td>
                             <td className="whitespace-nowrap px-6 py-4 text-center text-sm">

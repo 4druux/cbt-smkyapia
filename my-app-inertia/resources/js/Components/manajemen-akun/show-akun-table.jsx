@@ -18,19 +18,19 @@ const ShowAkunTable = ({
             <table className="w-full">
                 <thead className="bg-slate-50">
                     <tr>
-                        <th className="w-16 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="w-16 px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             No
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             Nama
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             {isSiswa ? "NIS" : "Email"}
                         </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             Role
                         </th>
-                        <th className="w-48 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-neutral-500">
+                        <th className="w-48 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
                             Aksi
                         </th>
                     </tr>
@@ -41,16 +41,16 @@ const ShowAkunTable = ({
                             key={user.id}
                             className="even:bg-slate-50 hover:bg-slate-100"
                         >
-                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-neutral-800">
+                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-neutral-800">
+                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                                 {user.name}
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500">
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                 {isSiswa ? user.nis : user.email}
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-neutral-500 capitalize">
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500 capitalize">
                                 {user.role}
                             </td>
                             <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">

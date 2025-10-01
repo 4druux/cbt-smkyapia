@@ -88,7 +88,7 @@ const ShowClass = () => {
                 <h3 className="font-medium text-red-600">
                     Gagal memuat data siswa.
                 </h3>
-                <p className="text-sm text-neutral-500 mt-2">
+                <p className="text-sm text-gray-500 mt-2">
                     Coba periksa koneksi atau hubungi administrator.
                 </p>
             </div>

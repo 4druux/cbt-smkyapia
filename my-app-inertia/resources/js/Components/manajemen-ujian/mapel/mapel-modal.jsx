@@ -44,7 +44,10 @@ const MapelModal = ({ isOpen, onClose, onSave, selectedMapel }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        const finalValue = name === "nama_mapel" ? value.toUpperCase() : value;
+
+        setFormData((prev) => ({ ...prev, [name]: finalValue }));
         if (errors[name]) {
             setErrors((prev) => ({ ...prev, [name]: null }));
         }
@@ -109,12 +112,12 @@ const MapelModal = ({ isOpen, onClose, onSave, selectedMapel }) => {
                         className="fixed bottom-0 left-0 right-0 w-full max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-white shadow-xl md:static md:max-w-2xl md:max-h-[100%] md:rounded-2xl"
                     >
                         <div className="sticky top-0 z-10 flex justify-center bg-white py-4 md:hidden">
-                            <div className="h-1 w-16 rounded-full bg-neutral-300" />
+                            <div className="h-1 w-16 rounded-full bg-gray-300" />
                         </div>
                         <form onSubmit={handleSubmit} noValidate>
                             <div className="border-b border-slate-300 px-4 pb-4 md:p-4">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-lg font-medium text-neutral-700">
+                                    <h3 className="text-lg font-medium text-gray-700">
                                         {isEditing
                                             ? "Edit Mata Pelajaran"
                                             : "Tambah Mata Pelajaran"}
@@ -123,21 +126,11 @@ const MapelModal = ({ isOpen, onClose, onSave, selectedMapel }) => {
                                         onClick={onClose}
                                         className="group cursor-pointer rounded-full p-2 hover:bg-slate-50"
                                     >
-                                        <X className="h-5 w-5 text-neutral-500 transition-all duration-300 group-hover:rotate-120 group-hover:text-neutral-800" />
+                                        <X className="h-5 w-5 text-gray-500 transition-all duration-300 group-hover:rotate-120 group-hover:text-gray-800" />
                                     </div>
                                 </div>
                             </div>
                             <div className="flex flex-col space-y-4 p-4 md:space-y-6 md:p-6">
-                                <InputField
-                                    id="nama_mapel"
-                                    name="nama_mapel"
-                                    label="Nama Mata Pelajaran"
-                                    value={formData.nama_mapel}
-                                    onChange={handleChange}
-                                    error={errors?.nama_mapel?.[0]}
-                                    disabled={isSubmitting}
-                                    required
-                                />
                                 <InputField
                                     id="kode_mapel"
                                     name="kode_mapel"
@@ -148,6 +141,18 @@ const MapelModal = ({ isOpen, onClose, onSave, selectedMapel }) => {
                                     disabled={isSubmitting}
                                     required
                                 />
+
+                                <InputField
+                                    id="nama_mapel"
+                                    name="nama_mapel"
+                                    label="Nama Mata Pelajaran"
+                                    value={formData.nama_mapel}
+                                    onChange={handleChange}
+                                    error={errors?.nama_mapel?.[0]}
+                                    disabled={isSubmitting}
+                                    required
+                                />
+
                                 <div className="flex justify-end gap-2 pt-4">
                                     <Button
                                         type="button"

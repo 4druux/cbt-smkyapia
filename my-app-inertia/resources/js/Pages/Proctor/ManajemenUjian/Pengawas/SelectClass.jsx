@@ -63,7 +63,7 @@ const SelectClass = () => {
                 <div className="space-y-8">
                     {sortedYears.map((year) => (
                         <section key={year}>
-                            <h4 className="mb-4 text-md font-medium text-neutral-600">{`Tahun Ajaran ${year}`}</h4>
+                            <h4 className="mb-4 text-md font-medium text-gray-600">{`Tahun Ajaran ${year}`}</h4>
                             <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
                                 {groupedByYear[year].map((kelas) => (
                                     <CardContent

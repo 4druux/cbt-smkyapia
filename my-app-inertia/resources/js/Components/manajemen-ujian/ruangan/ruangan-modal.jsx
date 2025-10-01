@@ -47,11 +47,15 @@ const RuanganModal = ({ isOpen, onClose, onSave, selectedRuangan }) => {
 
     const handleChange = (e) => {
         const { name, value } = e.target;
-        // Hanya izinkan angka untuk kapasitas
         if (name === "kapasitas" && !/^\d*$/.test(value)) {
             return;
         }
-        setFormData((prev) => ({ ...prev, [name]: value }));
+
+        const finalValue =
+            name === "nama_ruangan" ? value.toUpperCase() : value;
+
+        setFormData((prev) => ({ ...prev, [name]: finalValue }));
+
         if (errors[name]) {
             setErrors((prev) => ({ ...prev, [name]: null }));
         }
@@ -62,7 +66,6 @@ const RuanganModal = ({ isOpen, onClose, onSave, selectedRuangan }) => {
         setIsSubmitting(true);
         setErrors({});
 
-        // Client-side validation
         let validationErrors = {};
         if (!formData.nama_ruangan) {
             validationErrors.nama_ruangan = [
@@ -120,12 +123,12 @@ const RuanganModal = ({ isOpen, onClose, onSave, selectedRuangan }) => {
                         className="fixed bottom-0 left-0 right-0 w-full max-h-[85dvh] overflow-y-auto rounded-t-2xl bg-white shadow-xl md:static md:max-w-2xl md:max-h-[100%] md:rounded-2xl"
                     >
                         <div className="sticky top-0 z-10 flex justify-center bg-white py-4 md:hidden">
-                            <div className="h-1 w-16 rounded-full bg-neutral-300" />
+                            <div className="h-1 w-16 rounded-full bg-gray-300" />
                         </div>
                         <form onSubmit={handleSubmit} noValidate>
                             <div className="border-b border-slate-300 px-4 pb-4 md:p-4">
                                 <div className="flex items-center justify-between">
-                                    <h3 className="text-lg font-medium text-neutral-700">
+                                    <h3 className="text-lg font-medium text-gray-700">
                                         {isEditing
                                             ? "Edit Ruangan"
                                             : "Tambah Ruangan"}
@@ -134,21 +137,11 @@ const RuanganModal = ({ isOpen, onClose, onSave, selectedRuangan }) => {
                                         onClick={onClose}
                                         className="group cursor-pointer rounded-full p-2 hover:bg-slate-50"
                                     >
-                                        <X className="h-5 w-5 text-neutral-500 transition-all duration-300 group-hover:rotate-120 group-hover:text-neutral-800" />
+                                        <X className="h-5 w-5 text-gray-500 transition-all duration-300 group-hover:rotate-120 group-hover:text-gray-800" />
                                     </div>
                                 </div>
                             </div>
                             <div className="flex flex-col space-y-4 p-4 md:space-y-6 md:p-6">
-                                <InputField
-                                    id="nama_ruangan"
-                                    name="nama_ruangan"
-                                    label="Nama Ruangan"
-                                    value={formData.nama_ruangan}
-                                    onChange={handleChange}
-                                    error={errors?.nama_ruangan?.[0]}
-                                    disabled={isSubmitting}
-                                    required
-                                />
                                 <InputField
                                     id="kode_ruangan"
                                     name="kode_ruangan"
@@ -159,12 +152,24 @@ const RuanganModal = ({ isOpen, onClose, onSave, selectedRuangan }) => {
                                     disabled={isSubmitting}
                                     required
                                 />
+
+                                <InputField
+                                    id="nama_ruangan"
+                                    name="nama_ruangan"
+                                    label="Nama Ruangan"
+                                    value={formData.nama_ruangan}
+                                    onChange={handleChange}
+                                    error={errors?.nama_ruangan?.[0]}
+                                    disabled={isSubmitting}
+                                    required
+                                />
+
                                 <InputField
                                     id="kapasitas"
                                     name="kapasitas"
                                     label="Kapasitas"
-                                    type="text" // Type text to allow empty state, validation is manual
-                                    inputMode="numeric" // For better mobile keyboard
+                                    type="text"
+                                    inputMode="numeric"
                                     value={formData.kapasitas}
                                     onChange={handleChange}
                                     error={errors?.kapasitas?.[0]}

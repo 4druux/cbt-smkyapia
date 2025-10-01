@@ -146,9 +146,9 @@ const InputData = () => {
                         />
                     </div>
 
-                    <div className="border-t border-neutral-200 pt-6">
+                    <div className="border-t border-gray-200 pt-6">
                         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-4 gap-4">
-                            <label className="block text-sm font-medium text-neutral-700">
+                            <label className="block text-sm font-medium text-gray-700">
                                 Daftar Siswa{" "}
                                 <span className="text-red-600">*</span>
                             </label>

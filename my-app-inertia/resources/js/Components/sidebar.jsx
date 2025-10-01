@@ -191,10 +191,10 @@ const Sidebar = ({ isOpen }) => {
                 <div className="pt-6 px-4">
                     <div className="flex items-center gap-2 md:gap-4">
                         <div>
-                            <h1 className="text-md md:text-lg uppercase font-medium text-neutral-700">
+                            <h1 className="text-md md:text-lg uppercase font-medium text-gray-700">
                                 S** ***** {new Date().getFullYear()}
                             </h1>
-                            <p className="text-xs md:text-sm text-neutral-600">
+                            <p className="text-xs md:text-sm text-gray-600">
                                 Ujian Online
                             </p>
                         </div>
@@ -232,7 +232,7 @@ const Sidebar = ({ isOpen }) => {
                                                     className={`w-full flex items-center border-l-4 justify-between p-3 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
                                                         isParentActive
                                                             ? "bg-indigo-100 border-indigo-500"
-                                                            : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 border-transparent"
+                                                            : "text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-transparent"
                                                     }`}
                                                     onClick={() =>
                                                         setOpenSubMenu(
@@ -248,7 +248,7 @@ const Sidebar = ({ isOpen }) => {
                                                             className={`w-7 h-7 ${
                                                                 isParentActive
                                                                     ? "text-indigo-600"
-                                                                    : "text-neutral-600"
+                                                                    : "text-gray-600"
                                                             }`}
                                                         />
                                                         <div className="flex-1">
@@ -265,7 +265,7 @@ const Sidebar = ({ isOpen }) => {
                                                                 className={`text-xs ${
                                                                     isParentActive
                                                                         ? "text-indigo-600"
-                                                                        : "text-neutral-500 group-hover:text-neutral-800"
+                                                                        : "text-gray-500 group-hover:text-gray-800"
                                                                 }`}
                                                             >
                                                                 {
@@ -283,7 +283,7 @@ const Sidebar = ({ isOpen }) => {
                                                         } ${
                                                             isParentActive
                                                                 ? "text-indigo-600"
-                                                                : "text-neutral-600"
+                                                                : "text-gray-600"
                                                         }`}
                                                     />
                                                 </div>
@@ -328,7 +328,7 @@ const Sidebar = ({ isOpen }) => {
                                                                                 className={`w-full flex p-2 items-center rounded-lg text-left ${
                                                                                     isSubActive
                                                                                         ? "bg-indigo-100 text-indigo-600 font-medium"
-                                                                                        : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 hover:translate-x-1 transition-transform duration-300 will-change-transform"
+                                                                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-800 hover:translate-x-1 transition-transform duration-300 will-change-transform"
                                                                                 }`}
                                                                             >
                                                                                 <span className="text-sm">
@@ -359,14 +359,14 @@ const Sidebar = ({ isOpen }) => {
                                                 className={`w-full flex items-center border-l-4 space-x-2 p-3 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
                                                     isActive
                                                         ? "bg-indigo-100 border-indigo-500"
-                                                        : "text-neutral-600 hover:bg-neutral-50 hover:text-neutral-800 border-transparent"
+                                                        : "text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-transparent"
                                                 }`}
                                             >
                                                 <Icon
                                                     className={`w-7 h-7 ${
                                                         isActive
                                                             ? "text-indigo-600"
-                                                            : "text-neutral-600"
+                                                            : "text-gray-600"
                                                     }`}
                                                 />
                                                 <div className="flex-1">
@@ -383,7 +383,7 @@ const Sidebar = ({ isOpen }) => {
                                                         className={`text-xs ${
                                                             isActive
                                                                 ? "text-indigo-600"
-                                                                : "text-neutral-500 group-hover:text-neutral-800"
+                                                                : "text-gray-500 group-hover:text-gray-800"
                                                         }`}
                                                     >
                                                         {item.description}
@@ -406,7 +406,7 @@ const Sidebar = ({ isOpen }) => {
                                 animate="visible"
                                 exit="hidden"
                                 variants={footerVariants}
-                                className="text-xs uppercase text-neutral-500 text-center"
+                                className="text-xs uppercase text-gray-500 text-center"
                             >
                                 smk yapia &copy; {new Date().getFullYear()}
                             </motion.div>

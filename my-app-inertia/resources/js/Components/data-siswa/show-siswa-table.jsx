@@ -18,19 +18,19 @@ const ShowSiswaTable = ({
             <table className="w-full">
                 <thead className="bg-slate-50">
                     <tr>
-                        <th className="w-16 px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-neutral-500">
+                        <th className="w-16 px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-gray-500">
                             No
                         </th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-neutral-500">
+                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-gray-500">
                             Nama Siswa
                         </th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-neutral-500">
+                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-gray-500">
                             Nomor Induk Siswa
                         </th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-neutral-500">
+                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-left uppercase text-gray-500">
                             Jenis Kelamin
                         </th>
-                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-center uppercase text-neutral-500">
+                        <th className="px-6 py-3 text-xs font-medium tracking-wider text-center uppercase text-gray-500">
                             Aksi
                         </th>
                     </tr>
@@ -41,7 +41,7 @@ const ShowSiswaTable = ({
                             key={student.id}
                             className="even:bg-slate-50 hover:bg-slate-100"
                         >
-                            <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-neutral-800">
+                            <td className="px-6 py-4 text-sm font-medium whitespace-nowrap text-gray-800">
                                 {index + 1}.
                             </td>
                             <td className="px-6 py-4 whitespace-nowrap">
@@ -61,7 +61,7 @@ const ShowSiswaTable = ({
                                         }
                                     />
                                 ) : (
-                                    <div className="text-sm font-medium text-neutral-800">
+                                    <div className="text-sm font-medium text-gray-800">
                                         {student.nama}
                                     </div>
                                 )}
@@ -88,7 +88,7 @@ const ShowSiswaTable = ({
                                         }
                                     />
                                 ) : (
-                                    <div className="text-sm font-medium text-neutral-800">
+                                    <div className="text-sm font-medium text-gray-800">
                                         {student.nis}
                                     </div>
                                 )}
@@ -147,7 +147,7 @@ const ShowSiswaTable = ({
                                         </label>
                                     </div>
                                 ) : (
-                                    <div className="text-sm font-medium text-neutral-800">
+                                    <div className="text-sm font-medium text-gray-800">
                                         {student.jenis_kelamin}
                                     </div>
                                 )}

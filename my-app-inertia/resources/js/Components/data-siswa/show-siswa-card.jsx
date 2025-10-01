@@ -22,18 +22,18 @@ const ShowSiswaCard = ({
                 >
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-2">
-                            <p className="text-sm font-medium text-neutral-800">
+                            <p className="text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
                             <div className="flex flex-col gap-1">
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     {student.nama}
                                 </p>
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     <span className="font-normal">NIS: </span>
                                     {student.nis}
                                 </p>
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     <span className="font-normal">JK: </span>
                                     {student.jenis_kelamin === "L"
                                         ? "Laki-laki"
@@ -81,7 +81,7 @@ const ShowSiswaCard = ({
                                 />
 
                                 <div>
-                                    <span className="text-xs text-neutral-500">
+                                    <span className="text-xs text-gray-500">
                                         Jenis Kelamin
                                     </span>
                                     <div className="flex items-center space-x-6 mt-1">

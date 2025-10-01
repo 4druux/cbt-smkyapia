@@ -10,12 +10,10 @@ const HeaderContent = ({ Icon, title, description, details = [] }) => {
             )}
 
             <div>
-                <h3 className="text-md md:text-lg text-neutral-700">
-                    {title}
-                </h3>
+                <h3 className="text-md md:text-lg font-medium text-gray-700">{title}</h3>
 
                 {description && (
-                    <p className="text-xs md:text-sm text-neutral-500">
+                    <p className="text-xs md:text-sm text-gray-500">
                         {description}
                     </p>
                 )}
@@ -27,7 +25,7 @@ const HeaderContent = ({ Icon, title, description, details = [] }) => {
 
                             return (
                                 <React.Fragment key={item.label || index}>
-                                    <div className="flex items-center space-x-1 md:space-x-2 text-neutral-500">
+                                    <div className="flex items-center space-x-1 md:space-x-2 text-gray-500">
                                         {DetailIcon && (
                                             <DetailIcon className="hidden w-5 h-5 md:block" />
                                         )}

@@ -16,7 +16,7 @@ const CardContent = ({
 
     const cardProps = {
         className: clsx(
-            "relative z-10 flex h-full flex-col overflow-hidden rounded-xl border border-neutral-200 bg-white transition-all duration-300 ease-in-out shadow-sm hover:shadow-lg",
+            "relative z-10 flex h-full flex-col overflow-hidden rounded-xl border border-gray-200 bg-white transition-all duration-300 ease-in-out shadow-sm hover:shadow-lg",
             {
                 "cursor-pointer": href,
             },
@@ -52,12 +52,10 @@ const CardContent = ({
                         </h3>
                     )}
                     {subtitle && (
-                        <h3 className="text-md text-neutral-500">
-                            {subtitle}
-                        </h3>
+                        <h3 className="text-md text-gray-500">{subtitle}</h3>
                     )}
                     {description && (
-                        <h3 className="text-sm text-neutral-500 px-4 text-center">
+                        <h3 className="text-sm text-gray-500 px-4 text-center">
                             {description}
                         </h3>
                     )}
@@ -67,14 +65,14 @@ const CardContent = ({
                     {onDelete && (
                         <div
                             onClick={handleDeleteClick}
-                            className="p-2 bg-red-100 md:bg-neutral-100 rounded-full border-2 border-red-500 md:border-neutral-200 md:group-hover:bg-red-100 group-hover:border-red-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
+                            className="p-2 bg-red-100 md:bg-gray-100 rounded-full border-2 border-red-500 md:border-gray-200 md:group-hover:bg-red-100 group-hover:border-red-500 opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-opacity cursor-pointer"
                         >
                             <Trash2 className="w-5 h-5 text-red-600" />
                         </div>
                     )}
 
-                    <div className="p-2 bg-indigo-100 md:bg-neutral-100 rounded-full border-2 border-indigo-500 md:border-neutral-200 group-hover:bg-indigo-100 group-hover:border-indigo-500">
-                        <ArrowUpRight className="w-5 h-5 mx-auto text-indigo-600 md:text-neutral-600 md:group-hover:text-indigo-600 rotate-45 md:rotate-0 md:group-hover:rotate-45 transition-transform duration-300 will-change-transform" />
+                    <div className="p-2 bg-indigo-100 md:bg-gray-100 rounded-full border-2 border-indigo-500 md:border-gray-200 group-hover:bg-indigo-100 group-hover:border-indigo-500">
+                        <ArrowUpRight className="w-5 h-5 mx-auto text-indigo-600 md:text-gray-600 md:group-hover:text-indigo-600 rotate-45 md:rotate-0 md:group-hover:rotate-45 transition-transform duration-300 will-change-transform" />
                     </div>
                 </div>
             </Component>

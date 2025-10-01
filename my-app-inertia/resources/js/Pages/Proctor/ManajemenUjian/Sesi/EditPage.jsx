@@ -5,8 +5,8 @@ import Button from "@/Components/ui/button";
 import { CalendarPlus, ArrowLeft, Loader2, Save } from "lucide-react";
 import DotLoader from "@/Components/ui/dot-loader";
 import Select from "@/Components/common/select";
-import JadwalBuilder from "@/Components/manajemen-ujian/sesi/jadwal-builder";
-import PesertaSelector from "@/Components/manajemen-ujian/sesi/peserta-selector";
+import JadwalBuilder from "@/Components/manajemen-ujian/sesi/jadwal-sesi";
+import PesertaSelector from "@/Components/manajemen-ujian/sesi/peserta-sesi";
 import { useSesiUjianForm } from "@/Hooks/manajemen-ruangan/use-sesi-ujian-form";
 
 const EditPage = ({ sesiUjian }) => {
@@ -48,10 +48,10 @@ const EditPage = ({ sesiUjian }) => {
 
             <form onSubmit={handleSubmit} className="mt-6 space-y-8">
                 <div className="rounded-lg border p-6">
-                    <h3 className="text-lg font-medium mb-4">
+                    <h3 className="text-md font-medium text-gray-700 mb-2">
                         Informasi Umum Sesi
                     </h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <div className="grid grid-cols-1 md:grid-cols-4 gap-6">
                         <Select
                             label="Ruangan"
                             options={masterData.ruangans.map((r) => ({
@@ -74,44 +74,45 @@ const EditPage = ({ sesiUjian }) => {
                             }
                             error={errors.academic_year_id?.[0]}
                         />
-                        <div className="grid grid-cols-2 gap-4">
-                            <Select
-                                label="Semester"
-                                options={[
-                                    { value: "ganjil", label: "Ganjil" },
-                                    { value: "genap", label: "Genap" },
-                                ]}
-                                value={formData.semester}
-                                onChange={(v) =>
-                                    handleFormChange("semester", v)
-                                }
-                                error={errors.semester?.[0]}
-                            />
-                            <Select
-                                label="Jenis Asesmen"
-                                options={[
-                                    { value: "asts", label: "ASTS" },
-                                    { value: "asas", label: "ASAS" },
-                                ]}
-                                value={formData.jenis_asesmen}
-                                onChange={(v) =>
-                                    handleFormChange("jenis_asesmen", v)
-                                }
-                                error={errors.jenis_asesmen?.[0]}
-                            />
-                        </div>
+                        <Select
+                            label="Semester"
+                            options={[
+                                { value: "ganjil", label: "Ganjil" },
+                                { value: "genap", label: "Genap" },
+                            ]}
+                            value={formData.semester}
+                            onChange={(v) => handleFormChange("semester", v)}
+                            error={errors.semester?.[0]}
+                        />
+                        <Select
+                            label="Jenis Asesmen"
+                            options={[
+                                { value: "asts", label: "ASTS" },
+                                { value: "asas", label: "ASAS" },
+                            ]}
+                            value={formData.jenis_asesmen}
+                            onChange={(v) =>
+                                handleFormChange("jenis_asesmen", v)
+                            }
+                            error={errors.jenis_asesmen?.[0]}
+                        />
                     </div>
                 </div>
 
-                <JadwalBuilder
-                    jadwalSlots={formData.jadwal_slots}
-                    setFormData={setFormData}
-                    masterMapels={masterData.mapels}
-                    errors={errors}
-                />
+                <div className="rounded-lg border p-3 md:p-6">
+                    <h3 className="text-md font-medium text-gray-700 mb-2">
+                        Susun Jadwal Mata Pelajaran
+                    </h3>
+                    <JadwalBuilder
+                        jadwalSlots={formData.jadwal_slots}
+                        setFormData={setFormData}
+                        masterMapels={masterData.mapels}
+                        errors={errors}
+                    />
+                </div>
 
                 <div className="rounded-lg border p-6">
-                    <h3 className="text-lg font-medium mb-4">
+                    <h3 className="text-md font-medium text-gray-700 mb-2">
                         Pilih Peserta Ujian
                     </h3>
                     <PesertaSelector

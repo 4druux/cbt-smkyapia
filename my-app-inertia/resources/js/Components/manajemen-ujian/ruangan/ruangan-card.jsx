@@ -12,18 +12,18 @@ const RuanganCard = ({ ruangans, onEdit, onDelete, isProcessing }) => {
                 >
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-2">
-                            <p className="text-sm font-medium text-neutral-800">
+                            <p className="text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
                             <div className="flex flex-col gap-1">
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     {ruangan.nama_ruangan}
                                 </p>
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     <span className="font-normal">Kode: </span>
                                     {ruangan.kode_ruangan}
                                 </p>
-                                <p className="text-sm font-medium text-neutral-800">
+                                <p className="text-sm font-medium text-gray-800">
                                     <span className="font-normal">
                                         Kapasitas:{" "}
                                     </span>

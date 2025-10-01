@@ -87,7 +87,7 @@ export default function SignUpForm() {
                 />
 
                 <div>
-                    <label className="text-sm font-medium text-neutral-600 mb-1 block">
+                    <label className="text-sm font-medium text-gray-600 mb-1 block">
                         Daftar sebagai
                     </label>
                     <Select

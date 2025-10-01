@@ -5,6 +5,8 @@ import axios from "axios";
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react";
 
+const days = ["senin", "selasa", "rabu", "kamis", "jumat"];
+
 export const useSesiUjianForm = (sesiId = null) => {
     const isEditing = !!sesiId;
 
@@ -22,8 +24,8 @@ export const useSesiUjianForm = (sesiId = null) => {
     const [formData, setFormData] = useState({
         ruangan_id: "",
         academic_year_id: "",
-        semester: "ganjil",
-        jenis_asesmen: "asts",
+        semester: "",
+        jenis_asesmen: "",
         peserta_ids: [],
         jadwal_slots: [],
     });
@@ -36,13 +38,28 @@ export const useSesiUjianForm = (sesiId = null) => {
                 nama_sesi: initialData.nama_sesi || "",
                 ruangan_id: initialData.ruangan_id || "",
                 academic_year_id: initialData.academic_year_id || "",
-                semester: initialData.semester || "ganjil",
-                jenis_asesmen: initialData.jenis_asesmen || "asts",
+                semester: initialData.semester || "",
+                jenis_asesmen: initialData.jenis_asesmen || "",
                 peserta_ids: initialData.pesertas?.map((p) => p.id) || [],
                 jadwal_slots: initialData.jadwal_slots || [],
             });
         }
     }, [initialData, isEditing]);
+
+    useEffect(() => {
+        if (!isEditing && formData.jadwal_slots.length === 0) {
+            const initialSlots = days.map((day) => ({
+                hari: day,
+                waktu_mulai: "",
+                waktu_selesai: "",
+                mata_pelajaran_id: null,
+            }));
+            setFormData((prev) => ({
+                ...prev,
+                jadwal_slots: initialSlots,
+            }));
+        }
+    }, [isEditing]); 
 
     const handleFormChange = (name, value) => {
         setFormData((prev) => ({ ...prev, [name]: value }));

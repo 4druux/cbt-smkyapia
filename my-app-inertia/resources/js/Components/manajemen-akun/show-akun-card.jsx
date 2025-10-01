@@ -29,23 +29,23 @@ const ShowAkunCard = ({
                 >
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-2">
-                            <p className="text-sm font-medium text-neutral-800">
+                            <p className="text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
                             <div className="flex flex-col gap-1">
                                 <div className="flex items-center gap-2">
-                                    <User className="w-4 h-4 text-neutral-600" />
-                                    <p className="text-sm font-medium text-neutral-800">
+                                    <User className="w-4 h-4 text-gray-600" />
+                                    <p className="text-sm font-medium text-gray-800">
                                         {user.name}
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
                                     {isSiswa ? (
-                                        <Fingerprint className="w-4 h-4 text-neutral-600" />
+                                        <Fingerprint className="w-4 h-4 text-gray-600" />
                                     ) : (
-                                        <Mail className="w-4 h-4 text-neutral-600" />
+                                        <Mail className="w-4 h-4 text-gray-600" />
                                     )}
-                                    <p className="text-sm font-medium text-neutral-800">
+                                    <p className="text-sm font-medium text-gray-800">
                                         <span className="font-normal">
                                             {isSiswa ? "NIS: " : "Email: "}
                                         </span>
@@ -53,8 +53,8 @@ const ShowAkunCard = ({
                                     </p>
                                 </div>
                                 <div className="flex items-center gap-2">
-                                    <LockKeyholeOpen className="w-4 h-4 text-neutral-600" />
-                                    <p className="text-sm font-medium text-neutral-800">
+                                    <LockKeyholeOpen className="w-4 h-4 text-gray-600" />
+                                    <p className="text-sm font-medium text-gray-800">
                                         <span className="font-normal">
                                             Role:{" "}
                                         </span>

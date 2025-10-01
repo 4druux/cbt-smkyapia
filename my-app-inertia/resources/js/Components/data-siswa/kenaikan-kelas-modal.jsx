@@ -1,10 +1,8 @@
 import { useEffect } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Loader2, Save, X } from "lucide-react";
-
-// Components
 import Select from "@/Components/common/select";
-import Button from "../ui/button";
+import Button from "@/Components/ui/button";
 
 const KenaikanKelasModal = ({
     isOpen,
@@ -64,13 +62,13 @@ const KenaikanKelasModal = ({
                         className="fixed bottom-0 left-0 right-0 bg-white rounded-t-2xl shadow-xl w-full max-h-[85dvh] overflow-y-auto md:max-w-2xl md:static md:rounded-2xl md:max-h-[100%]"
                     >
                         <div className="md:hidden py-4 flex justify-center sticky top-0 bg-white z-10">
-                            <div className="w-16 h-1 bg-neutral-300 rounded-full" />
+                            <div className="w-16 h-1 bg-gray-300 rounded-full" />
                         </div>
 
                         <form onSubmit={handlePromoteSubmit}>
                             <div className="px-4 border-b border-slate-300 pb-4 md:p-4">
                                 <div className="flex justify-between items-center">
-                                    <h3 className="text-lg font-medium text-neutral-700">
+                                    <h3 className="text-lg font-medium text-gray-700">
                                         Naik Kelas
                                     </h3>
 
@@ -78,7 +76,7 @@ const KenaikanKelasModal = ({
                                         onClick={onClose}
                                         className="p-2 hover:bg-slate-50 rounded-full group cursor-pointer"
                                     >
-                                        <X className="w-5 h-5 text-neutral-500 group-hover:text-neutral-800 group-hover:rotate-120 transition-all duration-300" />
+                                        <X className="w-5 h-5 text-gray-500 group-hover:text-gray-800 group-hover:rotate-120 transition-all duration-300" />
                                     </div>
                                 </div>
                             </div>

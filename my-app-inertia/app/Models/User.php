@@ -36,7 +36,12 @@ class User extends Authenticatable
 
     public function siswa()
     {
-        return $this->hasOne(Siswa::class);
+        return $this->hasMany(Siswa::class);
+    }
+
+    public function currentSiswa()
+    {
+        return $this->hasOne(Siswa::class)->latestOfMany('id');
     }
 
     public function sesiUjians() {

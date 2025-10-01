@@ -1,19 +1,18 @@
 import React, { useState } from "react";
 import Select from "@/Components/common/select";
-import InputField from "@/Components/common/input-field";
 import { PlusCircle, Trash2 } from "lucide-react";
-import Button from "../../ui/button";
+import Button from "@/Components/ui/button";
+import { SelectTimePicker } from "@/Components/common/select-time-picker";
 
 const days = ["senin", "selasa", "rabu", "kamis", "jumat"];
 
-const JadwalBuilder = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
+const JadwalSesi = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
     const [activeDay, setActiveDay] = useState("senin");
 
     const mapelOptions = masterMapels.map((m) => ({
         value: m.id,
-        label: m.nama_mapel,
+        label: `(${m.kode_mapel}) - ${m.nama_mapel}`,
     }));
-    mapelOptions.unshift({ value: null, label: "-- Istirahat --" });
 
     const handleSlotChange = (index, field, value) => {
         const updatedSlots = [...jadwalSlots];
@@ -24,8 +23,8 @@ const JadwalBuilder = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
     const addSlot = () => {
         const newSlot = {
             hari: activeDay,
-            waktu_mulai: "07:30",
-            waktu_selesai: "08:30",
+            waktu_mulai: "",
+            waktu_selesai: "",
             mata_pelajaran_id: null,
         };
         setFormData((prev) => ({
@@ -40,9 +39,14 @@ const JadwalBuilder = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
         setFormData((prev) => ({ ...prev, jadwal_slots: updatedSlots }));
     };
 
+    const slotsForActiveDay = jadwalSlots.filter(
+        (slot) => slot.hari === activeDay
+    );
+    const canDelete = slotsForActiveDay.length > 1;
+
     return (
         <div className="rounded-lg border p-3 md:p-6">
-            <h3 className="text-md md:text-lg font-medium text-neutral-700 mb-2">
+            <h3 className="text-md font-medium text-gray-700">
                 Susun Jadwal Mata Pelajaran
             </h3>
             <div className="border-b border-gray-200">
@@ -55,14 +59,13 @@ const JadwalBuilder = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
                             key={day}
                             onClick={() => setActiveDay(day)}
                             type="button"
-                            className={`relative whitespace-nowrap py-3 px-1 font-medium text-xs md:text-sm capitalize ${
+                            className={`relative whitespace-nowrap py-3 px-1 font-medium text-sm capitalize ${
                                 activeDay === day
                                     ? "text-indigo-600"
                                     : "text-gray-500 hover:text-gray-700"
                             }`}
                         >
                             {day}
-
                             {activeDay === day && (
                                 <div className="absolute bottom-0 left-0 w-full h-1.5 bg-indigo-500 rounded-t-3xl" />
                             )}
@@ -72,56 +75,56 @@ const JadwalBuilder = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
             </div>
 
             <div className="mt-6 space-y-4">
-                {jadwalSlots
-                    .filter((slot) => slot.hari === activeDay)
-                    .map((slot) => {
-                        const originalIndex = jadwalSlots.findIndex(
-                            (s) => s === slot
-                        );
-                        return (
-                            <>
-                                <div
-                                    key={originalIndex}
-                                    className="grid grid-cols-1 md:grid-cols-3 gap-3 items-end"
-                                >
-                                    <InputField
-                                        label="Mulai"
-                                        type="time"
-                                        value={slot.waktu_mulai}
-                                        onChange={(e) =>
-                                            handleSlotChange(
-                                                originalIndex,
-                                                "waktu_mulai",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <InputField
-                                        label="Selesai"
-                                        type="time"
-                                        value={slot.waktu_selesai}
-                                        onChange={(e) =>
-                                            handleSlotChange(
-                                                originalIndex,
-                                                "waktu_selesai",
-                                                e.target.value
-                                            )
-                                        }
-                                    />
-                                    <Select
-                                        label="Mapel / Kegiatan"
-                                        options={mapelOptions}
-                                        value={slot.mata_pelajaran_id}
-                                        onChange={(v) =>
-                                            handleSlotChange(
-                                                originalIndex,
-                                                "mata_pelajaran_id",
-                                                v
-                                            )
-                                        }
-                                    />
-                                </div>
-                                <div className="flex justify-end">
+                {slotsForActiveDay.map((slot) => {
+                    const originalIndex = jadwalSlots.findIndex(
+                        (s) => s === slot
+                    );
+                    return (
+                        <div
+                            key={originalIndex}
+                            className="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                        >
+                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+                                <SelectTimePicker
+                                    label="Waktu Mulai"
+                                    value={slot.waktu_mulai}
+                                    onChange={(newValue) =>
+                                        handleSlotChange(
+                                            originalIndex,
+                                            "waktu_mulai",
+                                            newValue
+                                        )
+                                    }
+                                />
+
+                                <SelectTimePicker
+                                    label="Waktu Selesai"
+                                    value={slot.waktu_selesai}
+                                    onChange={(newValue) =>
+                                        handleSlotChange(
+                                            originalIndex,
+                                            "waktu_selesai",
+                                            newValue
+                                        )
+                                    }
+                                />
+
+                                <Select
+                                    label="Mapel"
+                                    options={mapelOptions}
+                                    value={slot.mata_pelajaran_id}
+                                    onChange={(v) =>
+                                        handleSlotChange(
+                                            originalIndex,
+                                            "mata_pelajaran_id",
+                                            v
+                                        )
+                                    }
+                                />
+                            </div>
+
+                            <div className="flex justify-end flex-shrink-0">
+                                {canDelete && (
                                     <Button
                                         type="button"
                                         variant="danger"
@@ -135,10 +138,11 @@ const JadwalBuilder = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
                                     >
                                         Hapus
                                     </Button>
-                                </div>
-                            </>
-                        );
-                    })}
+                                )}
+                            </div>
+                        </div>
+                    );
+                })}
                 <Button
                     type="button"
                     variant="outline"
@@ -158,4 +162,4 @@ const JadwalBuilder = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
     );
 };
 
-export default JadwalBuilder;
+export default JadwalSesi;

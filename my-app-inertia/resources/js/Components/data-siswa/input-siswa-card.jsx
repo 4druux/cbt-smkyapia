@@ -16,7 +16,7 @@ const InputSiswaCard = ({
                     className="flex flex-col gap-3 p-4 border rounded-lg border-slate-300"
                 >
                     <div className="flex items-center justify-between">
-                        <p className="text-sm font-medium text-neutral-800">
+                        <p className="text-sm font-medium text-gray-800">
                             Siswa {index + 1}
                         </p>
                         <Button
@@ -67,7 +67,7 @@ const InputSiswaCard = ({
                             />
                         </div>
                         <div>
-                            <label className="block text-sm font-medium text-neutral-700 mb-2">
+                            <label className="block text-sm font-medium text-gray-700 mb-2">
                                 Jenis Kelamin{" "}
                                 <span className="text-red-600">*</span>
                             </label>
