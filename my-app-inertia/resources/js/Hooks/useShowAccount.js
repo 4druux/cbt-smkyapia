@@ -23,13 +23,7 @@ export const useShowAccount = (role) => {
     const swrKey = role
         ? `/api/users?role=${role}&search=${debouncedSearchTerm}`
         : null;
-    const {
-        data: users,
-        error,
-        mutate,
-    } = useSWR(swrKey, fetcher, {
-        revalidateOnFocus: false,
-    });
+    const { data: users, error, mutate } = useSWR(swrKey, fetcher);
 
     const pendingUsers = useMemo(
         () => (users || []).filter((user) => !user.approved_at),

@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Str;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 
@@ -21,7 +22,7 @@ class UserManagementController extends Controller
         $query = User::where('role', $validated['role']);
 
         if ($validated['role'] === 'siswa') {
-            $query->with(['currentSiswa.kelas', 'currentSiswa.academicYear']);
+            $query->with(['siswa.kelas', 'siswa.academicYear']);
         }
 
         if ($request->filled('search')) {
@@ -34,13 +35,6 @@ class UserManagementController extends Controller
         }
 
         $users = $query->orderBy('name', 'asc')->get();
-
-        $users->each(function ($user) {
-            if ($user->currentSiswa) {
-                $user->setRelation('siswa', $user->currentSiswa);
-                unset($user->currentSiswa);
-            }
-        });
 
         return response()->json($users);
     }
@@ -67,6 +61,45 @@ class UserManagementController extends Controller
         ]);
 
         return response()->json(['message' => 'Password pengguna berhasil direset.']);
+    }
+
+    public function store(Request $request)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $email = Str::slug($validated['name'], '') . '@smkyapia.com';
+        $password = '12345678'; 
+
+        $user = User::create([
+            'name' => $validated['name'],
+            'email' => $email,
+            'password' => Hash::make($password),
+            'role' => 'pengawas',
+            'approved_at' => now(),
+        ]);
+
+        return response()->json([
+            'message' => 'Pengawas berhasil ditambahkan.',
+            'user' => $user
+        ], 201);
+    }
+
+    public function update(Request $request, User $user)
+    {
+        $validated = $request->validate([
+            'name' => 'required|string|max:255',
+        ]);
+
+        $user->update([
+            'name' => $validated['name'],
+        ]);
+
+        return response()->json([
+            'message' => 'Data pengguna berhasil diperbarui.',
+            'user' => $user
+        ]);
     }
 
     public function destroy(User $user)

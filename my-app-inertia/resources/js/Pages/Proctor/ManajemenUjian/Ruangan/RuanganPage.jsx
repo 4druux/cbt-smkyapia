@@ -5,7 +5,7 @@ import Button from "@/Components/ui/button";
 import DotLoader from "@/Components/ui/dot-loader";
 import DataNotFound from "@/Components/ui/data-not-found";
 import { PlusCircle, Warehouse } from "lucide-react";
-import { useRuangan } from "@/Hooks/manajemen-ruangan/use-ruangan";
+import { useRuangan } from "@/Hooks/manajemen-ujian/use-ruangan";
 import RuanganTable from "@/Components/manajemen-ujian/ruangan/ruangan-table";
 import RuanganModal from "@/Components/manajemen-ujian/ruangan/ruangan-modal";
 import RuanganCard from "@/Components/manajemen-ujian/ruangan/ruangan-card";
@@ -46,7 +46,7 @@ const RuanganPage = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6 md:gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 lg:gap-4">
                 <HeaderContent
                     Icon={Warehouse}
                     title="Manajemen Ruangan Ujian"

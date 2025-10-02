@@ -6,17 +6,23 @@ import { SelectTimePicker } from "@/Components/common/select-time-picker";
 
 const days = ["senin", "selasa", "rabu", "kamis", "jumat"];
 
-const JadwalSesi = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
+const JadwalSesi = ({
+    jadwalSlots,
+    setFormData,
+    masterMapels,
+    masterPengawas,
+    errors,
+}) => {
     const [activeDay, setActiveDay] = useState("senin");
-
-    const mapelOptions = masterMapels.map((m) => ({
-        value: m.id,
-        label: `(${m.kode_mapel}) - ${m.nama_mapel}`,
-    }));
 
     const handleSlotChange = (index, field, value) => {
         const updatedSlots = [...jadwalSlots];
         updatedSlots[index][field] = value;
+
+        if (field === "mata_pelajaran_id" && value === "istirahat") {
+            updatedSlots[index].pengawas_id = null;
+        }
+
         setFormData((prev) => ({ ...prev, jadwal_slots: updatedSlots }));
     };
 
@@ -26,6 +32,7 @@ const JadwalSesi = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
             waktu_mulai: "",
             waktu_selesai: "",
             mata_pelajaran_id: null,
+            pengawas_id: null,
         };
         setFormData((prev) => ({
             ...prev,
@@ -43,6 +50,19 @@ const JadwalSesi = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
         (slot) => slot.hari === activeDay
     );
     const canDelete = slotsForActiveDay.length > 1;
+
+    const mapelOptions = [
+        { value: "istirahat", label: "-- Istirahat --" },
+        ...masterMapels.map((m) => ({
+            value: m.id,
+            label: `(${m.kode_mapel}) - ${m.nama_mapel}`,
+        })),
+    ];
+
+    const pengawasOptions = (masterPengawas || []).map((p) => ({
+        value: p.id,
+        label: p.name,
+    }));
 
     return (
         <div className="rounded-lg border p-3 md:p-6">
@@ -84,7 +104,7 @@ const JadwalSesi = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
                             key={originalIndex}
                             className="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
                         >
-                            <div className="grid grid-cols-1 md:grid-cols-3 gap-3 w-full">
+                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 w-full">
                                 <SelectTimePicker
                                     label="Waktu Mulai"
                                     value={slot.waktu_mulai}
@@ -110,7 +130,9 @@ const JadwalSesi = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
                                 />
 
                                 <Select
-                                    label="Mapel"
+                                    label="Mata Pelajaran"
+                                    title="Pilih Mata Pelajaran"
+                                    description="Pilih mata pelajaran yang akan diujikan pada sesi ini"
                                     options={mapelOptions}
                                     value={slot.mata_pelajaran_id}
                                     onChange={(v) =>
@@ -121,6 +143,23 @@ const JadwalSesi = ({ jadwalSlots, setFormData, masterMapels, errors }) => {
                                         )
                                     }
                                 />
+                                
+                                {slot.mata_pelajaran_id !== "istirahat" && (
+                                    <Select
+                                        label="Pengawas"
+                                        title="Pilih Pengawas"
+                                        description="Pilih pengawas untuk jadwal ini"
+                                        options={pengawasOptions}
+                                        value={slot.pengawas_id}
+                                        onChange={(v) =>
+                                            handleSlotChange(
+                                                originalIndex,
+                                                "pengawas_id",
+                                                v
+                                            )
+                                        }
+                                    />
+                                )}
                             </div>
 
                             <div className="flex justify-end flex-shrink-0">

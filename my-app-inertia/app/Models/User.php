@@ -45,6 +45,6 @@ class User extends Authenticatable
     }
 
     public function sesiUjians() {
-        return $this->belongsToMany(SesiUjian::class, 'sesi_ujian_peserta');
+        return $this->belongsToMany(User::class, 'sesi_ujian_peserta')->withTimestamps();
     }
 }

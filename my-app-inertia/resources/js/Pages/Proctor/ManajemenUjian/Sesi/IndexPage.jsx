@@ -5,7 +5,7 @@ import Button from "@/Components/ui/button";
 import DotLoader from "@/Components/ui/dot-loader";
 import DataNotFound from "@/Components/ui/data-not-found";
 import { PlusCircle, CalendarDays } from "lucide-react";
-import { useSesiUjian } from "@/Hooks/manajemen-ruangan/use-sesi-ujian";
+import { useSesiUjian } from "@/Hooks/manajemen-ujian/use-sesi-ujian";
 import SesiUjianTable from "@/Components/manajemen-ujian/sesi/sesi-ujian-table";
 
 const IndexPage = () => {
@@ -32,7 +32,7 @@ const IndexPage = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6 md:gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 lg:gap-4">
                 <HeaderContent
                     Icon={CalendarDays}
                     title="Daftar Sesi Ujian"

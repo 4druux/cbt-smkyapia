@@ -55,30 +55,31 @@ const ShowAkunTable = ({
                             </td>
                             <td className="whitespace-nowrap px-6 py-4 text-center text-sm font-medium">
                                 <div className="flex items-center justify-center gap-2">
-                                    {type === "pending" && (
-                                        <>
-                                            <Button
-                                                size="sm"
-                                                variant="danger"
-                                                onClick={() =>
-                                                    onReject(user.id)
-                                                }
-                                                disabled={isProcessing}
-                                            >
-                                                Tolak
-                                            </Button>
-                                            <Button
-                                                size="sm"
-                                                variant="success"
-                                                onClick={() =>
-                                                    onApprove(user.id)
-                                                }
-                                                disabled={isProcessing}
-                                            >
-                                                Setujui
-                                            </Button>
-                                        </>
-                                    )}
+                                    {type === "pending" &&
+                                        role !== "pengawas" && (
+                                            <>
+                                                <Button
+                                                    size="sm"
+                                                    variant="danger"
+                                                    onClick={() =>
+                                                        onReject(user.id)
+                                                    }
+                                                    disabled={isProcessing}
+                                                >
+                                                    Tolak
+                                                </Button>
+                                                <Button
+                                                    size="sm"
+                                                    variant="success"
+                                                    onClick={() =>
+                                                        onApprove(user.id)
+                                                    }
+                                                    disabled={isProcessing}
+                                                >
+                                                    Setujui
+                                                </Button>
+                                            </>
+                                        )}
                                     {type === "approved" && (
                                         <>
                                             <Button

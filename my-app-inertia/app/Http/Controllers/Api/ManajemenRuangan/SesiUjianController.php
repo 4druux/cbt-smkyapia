@@ -4,9 +4,13 @@ namespace App\Http\Controllers\Api\ManajemenRuangan;
 
 use App\Http\Controllers\Controller;
 use App\Models\SesiUjian;
+use App\Models\Siswa;
+use App\Models\User;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\Rule;
+use Illuminate\Support\Facades\Hash;
 
 class SesiUjianController extends Controller
 {
@@ -32,27 +36,70 @@ class SesiUjianController extends Controller
             'semester' => 'required|in:ganjil,genap',
             'jenis_asesmen' => 'required|in:asts,asas',
             'peserta_ids' => 'required|array|min:1',
-            'peserta_ids.*' => 'exists:users,id',
+            'peserta_ids.*' => 'exists:siswas,id',
             'jadwal_slots' => 'required|array|min:1',
             'jadwal_slots.*.hari' => ['required', Rule::in(['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'])],
             'jadwal_slots.*.waktu_mulai' => 'required|date_format:H:i',
             'jadwal_slots.*.waktu_selesai' => 'required|date_format:H:i|after:jadwal_slots.*.waktu_mulai',
-            'jadwal_slots.*.mata_pelajaran_id' => 'nullable|exists:mata_pelajarans,id',
+            'jadwal_slots.*.mata_pelajaran_id' => [
+                function ($attribute, $value, $fail) {
+                    if (is_null($value)) return;
+                    if ($value === 'istirahat') return;
+                    if (!DB::table('mata_pelajarans')->where('id', $value)->exists()) {
+                        $fail('Mata pelajaran yang dipilih tidak valid.');
+                    }
+                },
+            ],
+            'jadwal_slots.*.pengawas_id' => [
+                'nullable',
+                'required_if:jadwal_slots.*.mata_pelajaran_id,!=,istirahat', 
+                'exists:users,id', 
+            ],
         ]);
 
-        $sesiUjian = DB::transaction(function () use ($validated) {
-            $newSesiUjian = SesiUjian::create($validated);
+        $sesiUjian = DB::transaction(function () use ($validated, $request) {
+            $sesiData = Arr::except($validated, ['peserta_ids', 'jadwal_slots']);
+            $newSesiUjian = SesiUjian::create($sesiData);
+        
+            $finalUserIds = [];
+            foreach ($validated['peserta_ids'] as $siswaId) {
+                $siswa = Siswa::find($siswaId);
+                if (!$siswa) continue;
 
-            $newSesiUjian->pesertas()->sync($validated['peserta_ids']);
+                if (is_null($siswa->user_id)) {
+                    $newUser = User::create([
+                        'name' => $siswa->nama,
+                        'email' => $siswa->nis, 
+                        'nis' => $siswa->nis,
+                        'password' => Hash::make($siswa->nis),
+                        'role' => 'siswa',
+                        'approved_at' => now(),
+                    ]);
 
-            foreach ($validated['jadwal_slots'] as $slotData) {
-                $newSesiUjian->jadwalSlots()->create($slotData);
+                    $siswa->user_id = $newUser->id;
+                    $siswa->save();
+
+                    $finalUserIds[] = $newUser->id;
+                } else {
+                    $finalUserIds[] = $siswa->user_id;
+                }
+            }
+
+            $newSesiUjian->pesertas()->sync($finalUserIds);
+
+            if (isset($validated['jadwal_slots'])) {
+                foreach ($validated['jadwal_slots'] as $slotData) {
+                    if (isset($slotData['mata_pelajaran_id']) && $slotData['mata_pelajaran_id'] === 'istirahat') {
+                        $slotData['mata_pelajaran_id'] = null;
+                    }
+                    $newSesiUjian->jadwalSlots()->create($slotData);
+                }
             }
 
             return $newSesiUjian;
         });
-        
-        $sesiUjian->load(['ruangan', 'pesertas', 'jadwalSlots.mataPelajaran']);
+
+        $sesiUjian->load(['ruangan', 'pesertas', 'jadwalSlots.mataPelajaran', 'jadwalSlots.pengawas']);
 
         return response()->json([
             'message' => 'Sesi ujian berhasil dibuat.',

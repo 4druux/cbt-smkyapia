@@ -26,7 +26,7 @@ class SesiUjian extends Model
     }
 
     public function pesertas() {
-        return $this->belongsToMany(User::class, 'sesi_ujian_peserta');
+        return $this->belongsToMany(User::class, 'sesi_ujian_peserta')->withTimestamps();
     }
 
     public function jadwalSlots(){

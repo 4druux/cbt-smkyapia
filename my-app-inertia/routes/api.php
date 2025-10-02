@@ -51,14 +51,18 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::put('/{siswa}', 'updateSiswa');
         Route::delete('/{siswa}', 'deleteSiswa');
         Route::post('/promote', 'promoteStudents');
+        Route::get('/all',  'getAllSiswa');
+
     });
 
     // Manajemen Akun
     Route::controller(UserManagementController::class)->prefix('users')->group(function () {
         Route::get('/', 'index');
+        Route::post('/', 'store');
+        Route::put('/{user}', 'update');
+        Route::delete('/{user}', 'destroy');
         Route::post('/{user}/approve', 'approve');
         Route::put('/{user}/reset-password', 'resetPassword');
-        Route::delete('/{user}', 'destroy');
     });
 
     // Manajemen Ruangan

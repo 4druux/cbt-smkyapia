@@ -9,6 +9,7 @@ class JadwalSlot extends Model
     protected $fillable = [
         'sesi_ujian_id',
         'mata_pelajaran_id',
+        'pengawas_id',
         'hari',
         'waktu_mulai',
         'waktu_selesai',
@@ -20,5 +21,9 @@ class JadwalSlot extends Model
 
     public function mataPelajaran() {
         return $this->belongsTo(MataPelajaran::class);
+    }
+
+    public function pengawas() {
+        return $this->belongsTo(User::class, 'pengawas_id');
     }
 }

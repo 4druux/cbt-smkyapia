@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import {
     Users,
     ChevronDown,
@@ -23,25 +23,6 @@ const Sidebar = ({ isOpen }) => {
         if (!normalizedRole) return false;
         return allowedRoles.includes(normalizedRole);
     };
-
-    useEffect(() => {
-        const handleResize = () => {
-            if (window.innerWidth >= 1280) {
-                document.body.style.overflow = "unset";
-            } else {
-                if (isOpen) {
-                    document.body.style.overflow = "hidden";
-                } else {
-                    document.body.style.overflow = "unset";
-                }
-            }
-        };
-
-        window.addEventListener("resize", handleResize);
-        handleResize();
-
-        return () => window.removeEventListener("resize", handleResize);
-    }, [isOpen]);
 
     const getIsActive = (href) => {
         const pathname = window.location.pathname;
@@ -87,7 +68,7 @@ const Sidebar = ({ isOpen }) => {
             subMenu: [
                 {
                     id: "sesi-ujian",
-                    label: "Sesi Ujian Siswa",
+                    label: "Sesi Ujian",
                     href: "/sesi-ujian",
                 },
                 {
@@ -189,7 +170,7 @@ const Sidebar = ({ isOpen }) => {
         >
             <div className="h-full flex flex-col">
                 <div className="pt-6 px-4">
-                    <div className="flex items-center gap-2 md:gap-4">
+                    <div className="flex items-center gap-2 lg:gap-4">
                         <div>
                             <h1 className="text-md md:text-lg uppercase font-medium text-gray-700">
                                 S** ***** {new Date().getFullYear()}
@@ -408,7 +389,7 @@ const Sidebar = ({ isOpen }) => {
                                 variants={footerVariants}
                                 className="text-xs uppercase text-gray-500 text-center"
                             >
-                                smk yapia &copy; {new Date().getFullYear()}
+                                S** ***** &copy; {new Date().getFullYear()}
                             </motion.div>
                         </div>
                     )}

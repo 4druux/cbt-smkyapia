@@ -36,14 +36,14 @@ const RuanganCard = ({ ruangans, onEdit, onDelete, isProcessing }) => {
                     <div className="pt-3 border-t border-slate-300">
                         <div className="flex justify-end gap-2">
                             <Button
-                                size="sm"
+                               size="md"
                                 variant="outline"
                                 onClick={() => onEdit(ruangan)}
                                 disabled={isProcessing}
                                 iconLeft={<PenLine className="w-4 h-4" />}
                             />
                             <Button
-                                size="sm"
+                               size="md"
                                 variant="danger"
                                 onClick={() => onDelete(ruangan.id)}
                                 disabled={isProcessing}

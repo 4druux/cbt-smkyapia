@@ -1,30 +1,37 @@
+import React from "react";
+import { LockKeyholeOpen, PenLine, Trash2, User } from "lucide-react";
 import Button from "@/Components/ui/button";
-import { PenLine, Trash2 } from "lucide-react";
 
-const MapelCard = ({ mapels, onEdit, onDelete, isProcessing }) => {
+const PengawasCard = ({ pengawas, onEdit, onDelete, isProcessing }) => {
     return (
         <div className="grid grid-cols-1 gap-4">
-            {mapels.map((mapel, index) => (
+            {pengawas.map((p, index) => (
                 <div
-                    key={mapel.id}
+                    key={p.id}
                     className="p-4 space-y-3 border rounded-xl border-slate-300"
                 >
                     <div className="flex items-start justify-between">
                         <div className="flex items-start gap-2">
-                            <p className="text-sm font-medium text-gray-800">
+                            <p className="flex-shrink-0 text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
                             <div className="flex flex-col gap-1">
-                                <p className="text-sm font-medium text-gray-800">
-                                    <span className="font-normal">
-                                        Mata Pelajaran:{" "}
-                                    </span>
-                                    {mapel.nama_mapel}
-                                </p>
-                                <p className="text-sm font-medium text-gray-800">
-                                    <span className="font-normal">Kode: </span>
-                                    {mapel.kode_mapel}
-                                </p>
+                                <div className="flex items-center gap-2">
+                                    <User className="w-4 h-4 text-gray-600" />
+                                    <p className="text-sm font-medium text-gray-800">
+                                        {p.name}
+                                    </p>
+                                </div>
+
+                                <div className="flex items-center gap-2">
+                                    <LockKeyholeOpen className="w-4 h-4 text-gray-600" />
+                                    <p className="text-sm font-medium text-gray-800">
+                                        <span className="font-normal">
+                                            Role:{" "}
+                                        </span>
+                                        {p.role}
+                                    </p>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -34,14 +41,15 @@ const MapelCard = ({ mapels, onEdit, onDelete, isProcessing }) => {
                             <Button
                                 size="md"
                                 variant="outline"
-                                onClick={() => onEdit(mapel)}
+                                onClick={() => onEdit(p)}
                                 disabled={isProcessing}
                                 iconLeft={<PenLine className="w-4 h-4" />}
                             />
+
                             <Button
                                 size="md"
                                 variant="danger"
-                                onClick={() => onDelete(mapel.id)}
+                                onClick={() => onDelete(p.id)}
                                 disabled={isProcessing}
                                 iconLeft={<Trash2 className="h-4 w-4" />}
                             />
@@ -53,4 +61,4 @@ const MapelCard = ({ mapels, onEdit, onDelete, isProcessing }) => {
     );
 };
 
-export default MapelCard;
+export default PengawasCard;

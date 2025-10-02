@@ -67,7 +67,7 @@ const ShowAkunCard = ({
 
                     <div className="pt-3 border-t border-slate-300">
                         <div className="flex justify-end gap-2">
-                            {type === "pending" && (
+                            {type === "pending" && role !== "pengawas" && (
                                 <>
                                     <Button
                                         size="md"

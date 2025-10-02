@@ -4,7 +4,7 @@ import HeaderContent from "@/Components/ui/header-content";
 import Button from "@/Components/ui/button";
 import { CalendarPlus, ArrowLeft, Loader2, Save } from "lucide-react";
 import DotLoader from "@/Components/ui/dot-loader";
-import { useSesiUjianForm } from "@/Hooks/manajemen-ruangan/use-sesi-ujian-form";
+import { useSesiUjianForm } from "@/Hooks/manajemen-ujian/use-sesi-ujian-form";
 import InformasiSesi from "@/Components/manajemen-ujian/sesi/informasi-sesi";
 import JadwalSesi from "@/Components/manajemen-ujian/sesi/jadwal-sesi";
 import PesertaSesi from "@/Components/manajemen-ujian/sesi/peserta-sesi";
@@ -20,6 +20,11 @@ const CreatePage = () => {
         handleFormChange,
         handleSubmit,
     } = useSesiUjianForm();
+
+    const selectedRuangan = masterData.ruangans.find(
+        (r) => r.id === formData.ruangan_id
+    );
+    const kapasitasRuangan = selectedRuangan ? selectedRuangan.kapasitas : 0;
 
     const breadcrumbItems = [
         { label: "Sesi Ujian", href: route("sesi-ujian.index") },
@@ -57,13 +62,15 @@ const CreatePage = () => {
                     jadwalSlots={formData.jadwal_slots}
                     setFormData={setFormData}
                     masterMapels={masterData.mapels}
+                    masterPengawas={masterData.pengawas}
                     errors={errors}
                 />
 
                 <PesertaSesi
-                    allUsers={masterData.allUsers}
+                    allSiswa={masterData.allSiswa}
                     selectedIds={formData.peserta_ids}
                     onFormChange={handleFormChange}
+                    kapasitas={kapasitasRuangan}
                     errors={errors}
                 />
 

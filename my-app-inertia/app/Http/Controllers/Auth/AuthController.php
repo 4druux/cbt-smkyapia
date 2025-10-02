@@ -7,7 +7,6 @@ use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Validation\Rule;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
 
@@ -28,7 +27,6 @@ class AuthController extends Controller
                 'name' => 'required|string|max:255',
                 'email' => 'required|string|email|max:255|unique:users',
                 'password' => ['required', 'confirmed', Rules\Password::defaults()],
-                'role' => ['required', Rule::in(['admin', 'pengawas'])], 
             ]);
         }
     
@@ -36,7 +34,7 @@ class AuthController extends Controller
             'name' => $request->name,
             'email' => $request->email,
             'password' => Hash::make($request->password),
-            'role' => $isFirstUser ? 'superadmin' : $request->role,
+            'role' => $isFirstUser ? 'superadmin' : 'admin',
             'approved_at' => $isFirstUser ? now() : null, 
         ]);
 

@@ -1,31 +1,31 @@
 import React from "react";
+import { PlusCircle, UserCheck } from "lucide-react";
+import { usePengawas } from "@/Hooks/manajemen-ujian/use-pengawas";
+import DotLoader from "@/Components/ui/dot-loader";
 import PageContent from "@/Components/ui/page-content";
 import HeaderContent from "@/Components/ui/header-content";
 import Button from "@/Components/ui/button";
-import DotLoader from "@/Components/ui/dot-loader";
+import PengawasTable from "@/Components/manajemen-ujian/pengawas/pengawas-table";
+import PengawasCard from "@/Components/manajemen-ujian/pengawas/pengawas-card";
 import DataNotFound from "@/Components/ui/data-not-found";
-import { PlusCircle, BookCopy } from "lucide-react";
-import { useMapel } from "@/Hooks/manajemen-ujian/use-mapel";
-import MapelModal from "@/Components/manajemen-ujian/mapel/mapel-modal";
-import MapelTable from "@/Components/manajemen-ujian/mapel/mapel-table";
-import MapelCard from "@/Components/manajemen-ujian/mapel/mapel-card";
+import PengawasModal from "@/Components/manajemen-ujian/pengawas/modal-pengawas";
 
-const MapelPage = () => {
+const PengawasPage = () => {
     const {
-        mapels,
+        pengawas,
         isLoading,
         error,
         isModalOpen,
         isProcessing,
         errors,
-        selectedMapel,
+        selectedPengawas,
         handleOpenModal,
         handleCloseModal,
-        handleSaveMapel,
-        handleDeleteMapel,
-    } = useMapel();
+        handleSavePengawas,
+        handleDeletePengawas,
+    } = usePengawas();
 
-    const breadcrumbItems = [{ label: "Mata Pelajaran", href: "#" }];
+    const breadcrumbItems = [{ label: "Pengawas", href: "#" }];
 
     if (isLoading)
         return (
@@ -36,23 +36,22 @@ const MapelPage = () => {
     if (error)
         return (
             <div className="flex h-screen items-center justify-center">
-                Error memuat data.
+                Error memuat data. Silakan coba lagi nanti.
             </div>
         );
 
     return (
         <PageContent
-            pageTitle="Manajemen Mata Pelajaran"
+            pageTitle="Manajemen Pengawas"
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
             <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 lg:gap-4">
                 <HeaderContent
-                    Icon={BookCopy}
-                    title="Manajemen Mata Pelajaran"
-                    description="Kelola semua mata pelajaran yang tersedia untuk ujian."
+                    Icon={UserCheck}
+                    title="Manajemen Pengawas"
+                    description="Kelola semua data pengawas yang tersedia untuk ujian."
                 />
-
                 <div className="flex justify-end flex-shrink-0">
                     <Button
                         onClick={() => handleOpenModal()}
@@ -60,43 +59,44 @@ const MapelPage = () => {
                         size={{ base: "md", md: "lg" }}
                         iconLeft={<PlusCircle className="h-5 w-5" />}
                     >
-                        Tambah Mapel
+                        Tambah Pengawas
                     </Button>
                 </div>
             </div>
 
-            {mapels && mapels.length > 0 ? (
+            {pengawas && pengawas.length > 0 ? (
                 <>
                     <div className="hidden lg:block">
-                        <MapelTable
-                            mapels={mapels}
+                        <PengawasTable
+                            pengawas={pengawas}
                             onEdit={handleOpenModal}
-                            onDelete={handleDeleteMapel}
+                            onDelete={handleDeletePengawas}
+                            isProcessing={isProcessing}
                         />
                     </div>
-
                     <div className="lg:hidden">
-                        <MapelCard
-                            mapels={mapels}
+                        <PengawasCard
+                            pengawas={pengawas}
                             onEdit={handleOpenModal}
-                            onDelete={handleDeleteMapel}
+                            onDelete={handleDeletePengawas}
+                            isProcessing={isProcessing}
                         />
                     </div>
                 </>
             ) : (
-                <DataNotFound message="Belum ada data mata pelajaran. Silakan tambahkan data baru." />
+                <DataNotFound message="Belum ada data pengawas. Silakan tambahkan data baru." />
             )}
 
-            <MapelModal
+            <PengawasModal
                 isOpen={isModalOpen}
                 onClose={handleCloseModal}
-                onSave={handleSaveMapel}
+                onSave={handleSavePengawas}
                 isProcessing={isProcessing}
                 errors={errors}
-                selectedMapel={selectedMapel}
+                selectedPengawas={selectedPengawas}
             />
         </PageContent>
     );
 };
 
-export default MapelPage;
+export default PengawasPage;

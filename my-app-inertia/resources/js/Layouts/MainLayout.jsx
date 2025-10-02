@@ -19,6 +19,18 @@ export default function MainLayout({ children, title }) {
     };
 
     useEffect(() => {
+        const isMobile = window.innerWidth < 768;
+        if (isSidebarOpen && isMobile) {
+            document.body.style.overflow = "hidden";
+        } else {
+            document.body.style.overflow = "unset";
+        }
+        return () => {
+            document.body.style.overflow = "unset";
+        };
+    }, [isSidebarOpen]);
+
+    useEffect(() => {
         const handleResize = () => {
             if (window.innerWidth < 768) {
                 setIsSidebarOpen(false);

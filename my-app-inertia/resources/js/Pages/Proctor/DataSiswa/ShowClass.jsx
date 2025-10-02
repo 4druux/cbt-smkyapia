@@ -121,7 +121,7 @@ const ShowClass = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col md:flex-row md:items-start md:justify-between mb-6 md:gap-4">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 lg:gap-4">
                 <HeaderContent
                     Icon={Users}
                     title="Daftar Siswa"

@@ -28,15 +28,16 @@ Route::middleware(['auth', 'prevent.caching'])->group(function () {
 
     Route::inertia('/kelola-ruangan', 'Proctor/ManajemenUjian/Ruangan/RuanganPage')->name('kelola-ruangan.index');
     Route::inertia('/kelola-mapel', 'Proctor/ManajemenUjian/Mapel/MapelPage')->name('kelola-mapel.index');
+    Route::inertia('/kelola-pengawas', 'Proctor/ManajemenUjian/Pengawas/PengawasPage')->name('kelola-pengawas.index');
     
-    Route::prefix('kelola-pengawas')->name('kelola-pengawas.')->group(function () {
-        Route::inertia('/', 'Proctor/ManajemenUjian/Pengawas/SelectRole')->name('index');
-        Route::inertia('/select-class', 'Proctor/ManajemenUjian/Pengawas/SelectClass')->name('class.index');
-        Route::inertia('/select-year', 'Proctor/ManajemenUjian/Pengawas/SelectYear')->name('year.index');
-        Route::inertia('/select-semester', 'Proctor/ManajemenUjian/Pengawas/SelectSemester')->name('semester.index');
-        Route::inertia('/select-assessment', 'Proctor/ManajemenUjian/Pengawas/SelectAssessment')->name('assessment.index');
-        Route::inertia('/show-assessment', 'Proctor/ManajemenUjian/Pengawas/ShowAssessment')->name('assessment.show');
-    });
+    // Route::prefix('kelola-pengawas')->name('kelola-pengawas.')->group(function () {
+    //     Route::inertia('/', 'Proctor/ManajemenUjian/Pengawas/SelectRole')->name('index');
+    //     Route::inertia('/select-class', 'Proctor/ManajemenUjian/Pengawas/SelectClass')->name('class.index');
+    //     Route::inertia('/select-year', 'Proctor/ManajemenUjian/Pengawas/SelectYear')->name('year.index');
+    //     Route::inertia('/select-semester', 'Proctor/ManajemenUjian/Pengawas/SelectSemester')->name('semester.index');
+    //     Route::inertia('/select-assessment', 'Proctor/ManajemenUjian/Pengawas/SelectAssessment')->name('assessment.index');
+    //     Route::inertia('/show-assessment', 'Proctor/ManajemenUjian/Pengawas/ShowAssessment')->name('assessment.show');
+    // });
 
 
     Route::inertia('/kelola-ujian', 'Proctor/KelolaUjian/HomePage')->name('kelola-ujian');

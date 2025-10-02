@@ -5,34 +5,14 @@ namespace App\Http\Controllers\Api\DataSiswa;
 use App\Http\Controllers\Controller;
 use App\Models\AcademicYear;
 use App\Models\Siswa;
-use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\Rule;
 use Illuminate\Validation\ValidationException;
 
 class DataSiswaController extends Controller
 {
-    private function registerSiswaAsUser(Siswa $siswa)
-    {
-        if (User::where('nis', $siswa->nis)->exists()) {
-            return;
-        }
-
-        $user = User::create([
-            'name' => $siswa->nama,
-            'nis' => $siswa->nis,
-            'password' => Hash::make(substr($siswa->nis, -8)),
-            'role' => 'siswa',
-            'approved_at' => now(),
-        ]);
-
-        $siswa->user_id = $user->id;
-        $siswa->save();
-    }
-
     public function createSiswa(Request $request)
     {
         DB::beginTransaction();
@@ -67,7 +47,6 @@ class DataSiswaController extends Controller
                     'kelas_id' => $validated['kelas_id'],
                     'academic_year_id' => $academicYear->id,
                 ]);
-                $this->registerSiswaAsUser($siswa);
             }
 
             DB::commit();
@@ -117,10 +96,15 @@ class DataSiswaController extends Controller
                 'kelas_id' => $validated['kelas_id'],
                 'academic_year_id' => $academicYear->id,
             ]);
-            $this->registerSiswaAsUser($siswa);
         });
 
         return response()->json(['message' => 'Siswa berhasil ditambahkan.', 'siswa' => $siswa], 201);
+    }
+
+    public function getAllSiswa()
+    {
+        $siswas = Siswa::with(['kelas', 'academicYear'])->orderBy('nama')->get();
+        return response()->json($siswas);
     }
 
     public function updateSiswa(Request $request, Siswa $siswa)
@@ -180,6 +164,7 @@ class DataSiswaController extends Controller
                 }
 
                 Siswa::create([
+                    'user_id' => $student->user_id,
                     'nis' => $student->nis,
                     'nama' => $student->nama,
                     'jenis_kelamin' => $student->jenis_kelamin,

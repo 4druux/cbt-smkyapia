@@ -42,7 +42,7 @@ const ShowAccount = () => {
         title: "Akun",
         IconComponent: UserCog,
     };
-    const needsApproval = role === "admin" || role === "pengawas";
+    const needsApproval = role === "admin";
 
     const breadcrumbItems = [
         { label: "Manajemen Akun", href: route("manajemen-akun.index") },
@@ -85,20 +85,22 @@ const ShowAccount = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col md:flex-row items-end md:items-start md:justify-between mb-6">
+            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 lg:gap-4">
                 <HeaderContent
                     Icon={account.IconComponent}
                     title={`Daftar Akun ${account.title}`}
                     description={`Kelola semua akun ${role} yang terdaftar di sistem.`}
                 />
 
-                <SearchBar
-                    value={searchTerm}
-                    onChange={handleSearchChange}
-                    onClear={handleClearSearch}
-                    placeholder="Cari Nama, Email, atau NIS..."
-                    className="max-w-xs"
-                />
+                <div className="flex justify-end flex-shrink-0">
+                    <SearchBar
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                        onClear={handleClearSearch}
+                        placeholder="Cari Nama, Email, atau NIS..."
+                        className="max-w-xs"
+                    />
+                </div>
             </div>
 
             {needsApproval && pendingUsers.length > 0 && (
@@ -111,8 +113,12 @@ const ShowAccount = () => {
                             users={pendingUsers}
                             type="pending"
                             role={role}
-                            onApprove={handleApprove}
-                            onReject={handleReject}
+                            onApprove={
+                                role === "admin" ? handleApprove : undefined
+                            }
+                            onReject={
+                                role === "admin" ? handleReject : undefined
+                            }
                             isProcessing={isProcessing}
                         />
                     </div>
@@ -121,8 +127,12 @@ const ShowAccount = () => {
                             users={pendingUsers}
                             type="pending"
                             role={role}
-                            onApprove={handleApprove}
-                            onReject={handleReject}
+                            onApprove={
+                                role === "admin" ? handleApprove : undefined
+                            }
+                            onReject={
+                                role === "admin" ? handleReject : undefined
+                            }
                             isProcessing={isProcessing}
                         />
                     </div>

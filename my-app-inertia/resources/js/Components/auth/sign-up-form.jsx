@@ -6,7 +6,6 @@ import toast from "react-hot-toast";
 import Button from "../ui/button";
 import { Loader2, LogIn } from "lucide-react";
 import axios from "axios";
-import Select from "../common/select";
 
 export default function SignUpForm() {
     const [values, setValues] = useState({
@@ -46,11 +45,6 @@ export default function SignUpForm() {
         }
     };
 
-    const roleOptions = [
-        { value: "admin", label: "Admin" },
-        { value: "pengawas", label: "Pengawas" },
-    ];
-
     return (
         <div className="w-full max-w-md px-4 md:px-0">
             <div className="flex flex-col items-start">
@@ -85,27 +79,6 @@ export default function SignUpForm() {
                     error={errors.email}
                     required
                 />
-
-                <div>
-                    <label className="text-sm font-medium text-gray-600 mb-1 block">
-                        Daftar sebagai
-                    </label>
-                    <Select
-                        title="Pilih Role"
-                        description="Role yang akan digunakan untuk menggunakan aplikasi."
-                        options={roleOptions}
-                        value={values.role}
-                        onChange={(value) =>
-                            setValues((prevValues) => ({
-                                ...prevValues,
-                                role: value,
-                            }))
-                        }
-                        isSearchable={false}
-                        error={errors.role?.[0]}
-                        placeholder="-- Pilih Role --"
-                    />
-                </div>
 
                 <PasswordField
                     id="password"
