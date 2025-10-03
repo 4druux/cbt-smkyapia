@@ -1,10 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Select from "@/Components/common/select";
-import { PlusCircle, Trash2 } from "lucide-react";
+import { PlusCircle, Sparkles, Trash2 } from "lucide-react";
 import Button from "@/Components/ui/button";
 import { SelectTimePicker } from "@/Components/common/select-time-picker";
-
-const days = ["senin", "selasa", "rabu", "kamis", "jumat"];
+import toast from "react-hot-toast";
 
 const JadwalSesi = ({
     jadwalSlots,
@@ -13,20 +12,33 @@ const JadwalSesi = ({
     masterPengawas,
     errors,
 }) => {
-    const [activeDay, setActiveDay] = useState("senin");
+    const dynamicDays = useMemo(() => {
+        if (!jadwalSlots || jadwalSlots.length === 0) return [];
+        return [...new Set(jadwalSlots.map((slot) => slot.hari))];
+    }, [jadwalSlots]);
+
+    const [activeDay, setActiveDay] = useState("");
+
+    useEffect(() => {
+        if (dynamicDays.length > 0 && !dynamicDays.includes(activeDay)) {
+            setActiveDay(dynamicDays[0]);
+        }
+    }, [dynamicDays, activeDay]);
 
     const handleSlotChange = (index, field, value) => {
         const updatedSlots = [...jadwalSlots];
         updatedSlots[index][field] = value;
-
         if (field === "mata_pelajaran_id" && value === "istirahat") {
             updatedSlots[index].pengawas_id = null;
         }
-
         setFormData((prev) => ({ ...prev, jadwal_slots: updatedSlots }));
     };
 
     const addSlot = () => {
+        if (!activeDay) {
+            toast.error("Pilih rentang tanggal terlebih dahulu.");
+            return;
+        }
         const newSlot = {
             hari: activeDay,
             waktu_mulai: "",
@@ -44,6 +56,70 @@ const JadwalSesi = ({
         const updatedSlots = [...jadwalSlots];
         updatedSlots.splice(index, 1);
         setFormData((prev) => ({ ...prev, jadwal_slots: updatedSlots }));
+    };
+
+    const handleAutoFill = () => {
+        if (jadwalSlots.length === 0) {
+            toast.error("Pilih rentang tanggal terlebih dahulu.");
+            return;
+        }
+        if (masterMapels.length === 0 || masterPengawas.length === 0) {
+            toast.error(
+                "Data master mata pelajaran atau pengawas tidak ditemukan."
+            );
+            return;
+        }
+
+        const dailyScheduleTemplate = [
+            { start: "07:30", end: "09:00", type: "mapel" },
+            { start: "09:00", end: "10:30", type: "mapel" },
+            { start: "10:30", end: "11:00", type: "istirahat" },
+            { start: "11:00", end: "12:30", type: "mapel" },
+        ];
+
+        const shuffledMapels = [...masterMapels].sort(
+            () => 0.5 - Math.random()
+        );
+        const shuffledPengawas = [...masterPengawas].sort(
+            () => 0.5 - Math.random()
+        );
+        let mapelIndex = 0;
+        let pengawasIndex = 0;
+
+        const newSlots = [];
+        const uniqueDays = [...new Set(jadwalSlots.map((slot) => slot.hari))];
+
+        uniqueDays.forEach((day) => {
+            const daySchedule = dailyScheduleTemplate.map((template) => {
+                const mapel =
+                    shuffledMapels[mapelIndex % shuffledMapels.length];
+                const pengawas =
+                    shuffledPengawas[pengawasIndex % shuffledPengawas.length];
+                mapelIndex++;
+                pengawasIndex++;
+
+                if (template.type === "istirahat") {
+                    return {
+                        hari: day,
+                        waktu_mulai: template.start,
+                        waktu_selesai: template.end,
+                        mata_pelajaran_id: "istirahat",
+                        pengawas_id: null,
+                    };
+                }
+                return {
+                    hari: day,
+                    waktu_mulai: template.start,
+                    waktu_selesai: template.end,
+                    mata_pelajaran_id: mapel.id,
+                    pengawas_id: pengawas.id,
+                };
+            });
+            newSlots.push(...daySchedule);
+        });
+
+        setFormData((prev) => ({ ...prev, jadwal_slots: newSlots }));
+        toast.success("Jadwal berhasil diisi secara otomatis!");
     };
 
     const slotsForActiveDay = jadwalSlots.filter(
@@ -66,15 +142,26 @@ const JadwalSesi = ({
 
     return (
         <div className="rounded-lg border p-3 md:p-6">
-            <h3 className="text-md font-medium text-gray-700">
-                Susun Jadwal Mata Pelajaran
-            </h3>
+            <div className="flex justify-between items-center mb-4">
+                <h3 className="text-md font-medium text-gray-700">
+                    Susun Jadwal Mata Pelajaran
+                </h3>
+                <Button
+                    type="button"
+                    variant="outline"
+                    size="sm"
+                    onClick={handleAutoFill}
+                >
+                    <Sparkles className="h-4 w-4 mr-2" />
+                    Isi Otomatis
+                </Button>
+            </div>
             <div className="border-b border-gray-200">
                 <nav
-                    className="-mb-px flex space-x-2 md:space-x-6"
+                    className="-mb-px flex space-x-2 md:space-x-6 overflow-x-auto"
                     aria-label="Tabs"
                 >
-                    {days.map((day) => (
+                    {dynamicDays.map((day) => (
                         <button
                             key={day}
                             onClick={() => setActiveDay(day)}
@@ -132,7 +219,6 @@ const JadwalSesi = ({
                                 <Select
                                     label="Mata Pelajaran"
                                     title="Pilih Mata Pelajaran"
-                                    description="Pilih mata pelajaran yang akan diujikan pada sesi ini"
                                     options={mapelOptions}
                                     value={slot.mata_pelajaran_id}
                                     onChange={(v) =>
@@ -143,12 +229,11 @@ const JadwalSesi = ({
                                         )
                                     }
                                 />
-                                
+
                                 {slot.mata_pelajaran_id !== "istirahat" && (
                                     <Select
                                         label="Pengawas"
                                         title="Pilih Pengawas"
-                                        description="Pilih pengawas untuk jadwal ini"
                                         options={pengawasOptions}
                                         value={slot.pengawas_id}
                                         onChange={(v) =>

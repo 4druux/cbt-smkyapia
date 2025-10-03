@@ -4,8 +4,8 @@ import { useState, useEffect } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import { router } from "@inertiajs/react";
-
-// const days = ["senin", "selasa", "rabu", "kamis", "jumat"];
+import { eachDayOfInterval, format, differenceInDays } from "date-fns";
+import { id as localeId } from "date-fns/locale";
 
 export const useSesiUjianForm = (sesiId = null) => {
     const isEditing = !!sesiId;
@@ -25,11 +25,13 @@ export const useSesiUjianForm = (sesiId = null) => {
         ruangan_id: "",
         academic_year_id: "",
         semester: "",
+        date_range: { from: undefined, to: undefined },
         jenis_asesmen: "",
         jadwal_slots: [],
         pengawas_id: "",
         peserta_ids: [],
     });
+
     const [isProcessing, setIsProcessing] = useState(false);
     const [errors, setErrors] = useState({});
 
@@ -43,36 +45,6 @@ export const useSesiUjianForm = (sesiId = null) => {
                 jenis_asesmen: initialData.jenis_asesmen || "",
                 peserta_ids: initialData.pesertas?.map((p) => p.id) || [],
                 jadwal_slots: initialData.jadwal_slots || [],
-            });
-        }
-    }, [initialData, isEditing]);
-
-    // useEffect(() => {
-    //     if (!isEditing && formData.jadwal_slots.length === 0) {
-    //         const initialSlots = days.map((day) => ({
-    //             hari: day,
-    //             waktu_mulai: "",
-    //             waktu_selesai: "",
-    //             mata_pelajaran_id: null,
-    //         }));
-    //         setFormData((prev) => ({
-    //             ...prev,
-    //             jadwal_slots: initialSlots,
-    //         }));
-    //     }
-    // }, [isEditing]);
-
-    useEffect(() => {
-        if (isEditing && initialData) {
-            setFormData({
-                nama_sesi: initialData.nama_sesi || "",
-                ruangan_id: initialData.ruangan_id || "",
-                academic_year_id: initialData.academic_year_id || "",
-                semester: initialData.semester || "",
-                jenis_asesmen: initialData.jenis_asesmen || "",
-                peserta_ids: initialData.pesertas?.map((p) => p.id) || [],
-                jadwal_slots: initialData.jadwal_slots || [],
-
                 date_range: initialData.date_range || {
                     from: undefined,
                     to: undefined,
@@ -80,6 +52,37 @@ export const useSesiUjianForm = (sesiId = null) => {
             });
         }
     }, [initialData, isEditing]);
+
+    useEffect(() => {
+        const { from, to } = formData.date_range;
+        if (from && to) {
+            if (differenceInDays(to, from) + 1 > 7) {
+                toast.error("Rentang tanggal tidak boleh lebih dari 7 hari.");
+                setFormData((prev) => ({
+                    ...prev,
+                    date_range: { from, to: undefined },
+                }));
+                return;
+            }
+
+            const daysInRange = eachDayOfInterval({ start: from, end: to });
+
+            const newSlots = daysInRange.map((day) => ({
+                hari: format(day, "eeee, d MMM", { locale: localeId }),
+                waktu_mulai: "",
+                waktu_selesai: "",
+                mata_pelajaran_id: null,
+                pengawas_id: null,
+            }));
+
+            setFormData((prev) => ({
+                ...prev,
+                jadwal_slots: newSlots,
+            }));
+        } else {
+            setFormData((prev) => ({ ...prev, jadwal_slots: [] }));
+        }
+    }, [formData.date_range]);
 
     const handleFormChange = (name, value) => {
         setFormData((prev) => ({ ...prev, [name]: value }));
@@ -98,7 +101,6 @@ export const useSesiUjianForm = (sesiId = null) => {
             const isIstirahat = slot.mata_pelajaran_id === "istirahat";
             const hasMapelAndPengawas =
                 slot.mata_pelajaran_id && slot.pengawas_id;
-
             return hasTime && (isIstirahat || hasMapelAndPengawas);
         });
 
@@ -139,10 +141,8 @@ export const useSesiUjianForm = (sesiId = null) => {
             if (error.response?.status === 422) {
                 const validationErrors = error.response.data.errors;
                 setErrors(validationErrors);
-
                 const firstErrorKey = Object.keys(validationErrors)[0];
                 const firstErrorMessage = validationErrors[firstErrorKey][0];
-
                 toast.error(`Kesalahan: ${firstErrorMessage}`);
             } else {
                 toast.error(

@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useEffect } from "react";
 import Select from "@/Components/common/select";
 import { Info } from "lucide-react";
 import ShiftClickInfoModal from "./shift-click-info-modal";
@@ -13,6 +13,11 @@ const PesertaSesi = ({
     const [filterKelas, setFilterKelas] = useState("");
     const [lastCheckedId, setLastCheckedId] = useState(null);
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
+
+    useEffect(() => {
+        onFormChange("peserta_ids", []);
+        setLastCheckedId(null);
+    }, [filterKelas]);
 
     const kelasOptions = useMemo(() => {
         const optionsMap = new Map();
@@ -84,15 +89,22 @@ const PesertaSesi = ({
 
     const handleSelectAll = (e) => {
         const isChecked = e.target.checked;
-        const userIdsToToggle = filteredUsers.map((user) => user.id);
+        const visibleSiswa = filteredUsers;
+        const visibleIds = visibleSiswa.map((siswa) => siswa.id);
 
         if (isChecked) {
-            const newIds = [...new Set([...selectedIds, ...userIdsToToggle])];
+            const visibleNisSet = new Set(visibleSiswa.map((s) => s.nis));
+
+            const otherSelectedIds = selectedIds.filter((id) => {
+                const siswa = allSiswa.find((s) => s.id === id);
+                return siswa && !visibleNisSet.has(siswa.nis);
+            });
+
+            const newIds = [...new Set([...otherSelectedIds, ...visibleIds])];
             onFormChange("peserta_ids", newIds);
         } else {
-            const newIds = selectedIds.filter(
-                (id) => !userIdsToToggle.includes(id)
-            );
+            const visibleIdsSet = new Set(visibleIds);
+            const newIds = selectedIds.filter((id) => !visibleIdsSet.has(id));
             onFormChange("peserta_ids", newIds);
         }
     };

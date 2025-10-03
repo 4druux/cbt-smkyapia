@@ -38,7 +38,7 @@ class SesiUjianController extends Controller
             'peserta_ids' => 'required|array|min:1',
             'peserta_ids.*' => 'exists:siswas,id',
             'jadwal_slots' => 'required|array|min:1',
-            'jadwal_slots.*.hari' => ['required', Rule::in(['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'])],
+            'jadwal_slots.*.hari' => ['required', 'string', 'max:255'],
             'jadwal_slots.*.waktu_mulai' => 'required|date_format:H:i',
             'jadwal_slots.*.waktu_selesai' => 'required|date_format:H:i|after:jadwal_slots.*.waktu_mulai',
             'jadwal_slots.*.mata_pelajaran_id' => [
@@ -122,7 +122,7 @@ class SesiUjianController extends Controller
             'peserta_ids' => 'required|array|min:1',
             'peserta_ids.*' => 'exists:users,id',
             'jadwal_slots' => 'required|array|min:1',
-            'jadwal_slots.*.hari' => ['required', Rule::in(['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu'])],
+            'jadwal_slots.*.hari' => ['required', 'string', 'max:255'],
             'jadwal_slots.*.waktu_mulai' => 'required|date_format:H:i',
             'jadwal_slots.*.waktu_selesai' => 'required|date_format:H:i|after:jadwal_slots.*.waktu_mulai',
             'jadwal_slots.*.mata_pelajaran_id' => 'nullable|exists:mata_pelajarans,id',

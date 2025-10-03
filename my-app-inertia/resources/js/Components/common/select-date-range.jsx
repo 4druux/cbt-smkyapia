@@ -1,5 +1,6 @@
 import { format } from "date-fns";
 import { DayPicker } from "react-day-picker";
+import { id as localeId } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import "react-day-picker/dist/style.css";
 import { useDropdown } from "@/Hooks/use-dropdown";
@@ -48,11 +49,11 @@ export default function SelectDateRange({
     const formattedValue = hasValue ? (
         value.to ? (
             <>
-                {format(value.from, "d LLL, yyyy")} -{" "}
-                {format(value.to, "d LLL, yyyy")}
+                {format(value.from, "d MMM yyyy", { locale: localeId })} -{" "}
+                {format(value.to, "d MMM yyyy", { locale: localeId })}
             </>
         ) : (
-            format(value.from, "d LLL, yyyy")
+            format(value.from, "d MMM yyyy", { locale: localeId })
         )
     ) : (
         <>&nbsp;</>
@@ -90,13 +91,14 @@ export default function SelectDateRange({
             {isOpen && (
                 <div className="absolute z-20 mt-1 w-auto rounded-lg border border-slate-300 bg-white p-0 shadow-lg">
                     <DayPicker
+                        locale={localeId}
                         mode="range"
                         selected={value}
                         onSelect={onChange}
                         defaultMonth={value?.from || new Date()}
                         numberOfMonths={1}
                         classNames={{
-                            months: "flex flex-row gap-4 p-3",
+                            months: "flex flex-row gap-4 p-6",
                             caption_label: "text-sm font-medium",
                             head_cell:
                                 "text-gray-500 rounded-md font-normal text-[0.7rem]",

@@ -11,7 +11,7 @@ return new class extends Migration {
             $table->foreignId('sesi_ujian_id')->constrained('sesi_ujians')->onDelete('cascade');
             $table->foreignId('mata_pelajaran_id')->nullable()->constrained('mata_pelajarans')->onDelete('cascade');
             $table->foreignId('pengawas_id')->nullable()->constrained('users')->onDelete('set null');
-            $table->enum('hari', ['senin', 'selasa', 'rabu', 'kamis', 'jumat', 'sabtu', 'minggu']);
+            $table->string('hari', 50);
             $table->time('waktu_mulai');
             $table->time('waktu_selesai');
             $table->timestamps();
