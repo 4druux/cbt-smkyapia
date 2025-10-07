@@ -7,14 +7,17 @@ use Illuminate\Database\Eloquent\Model;
 class SesiUjian extends Model
 {
     protected $fillable = [
-        'nama_sesi',
         'ruangan_id',
         'academic_year_id',
         'semester',
         'jenis_asesmen',
-        'tanggal_ujian',
-        'waktu_mulai',  
-        'waktu_selesai',
+        'tanggal_mulai',
+        'tanggal_selesai',
+    ];
+
+    protected $casts = [
+        'tanggal_mulai' => 'date',
+        'tanggal_selesai' => 'date',
     ];
 
     public function ruangan() {

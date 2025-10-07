@@ -66,7 +66,7 @@ const PengawasPage = () => {
 
             {pengawas && pengawas.length > 0 ? (
                 <>
-                    <div className="hidden lg:block">
+                    <div className="hidden xl:block">
                         <PengawasTable
                             pengawas={pengawas}
                             onEdit={handleOpenModal}
@@ -74,7 +74,7 @@ const PengawasPage = () => {
                             isProcessing={isProcessing}
                         />
                     </div>
-                    <div className="lg:hidden">
+                    <div className="xl:hidden">
                         <PengawasCard
                             pengawas={pengawas}
                             onEdit={handleOpenModal}

@@ -15,6 +15,11 @@ class JadwalSlot extends Model
         'waktu_selesai',
     ];
 
+    protected $casts = [
+        'waktu_mulai' => 'datetime:H:i',
+        'waktu_selesai' => 'datetime:H:i',
+    ];
+
     public function sesiUjian() {
         return $this->belongsTo(SesiUjian::class);
     }

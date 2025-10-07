@@ -164,9 +164,9 @@ const Sidebar = ({ isOpen }) => {
     return (
         <aside
             className={`
-        fixed top-0 left-0 bg-white z-50 rounded-r-xl md:rounded-lg border transition-transform duration-300 ease-in-out w-[270px] 
-        h-full md:h-[calc(93vh-2.5rem)] md:top-24
-        ${isOpen ? "translate-x-0 md:left-6" : "-translate-x-full"}`}
+        fixed top-0 left-0 bg-white z-50 rounded-r-xl lg:rounded-lg border transition-transform duration-300 ease-in-out w-[270px] 
+        h-full lg:h-[calc(93vh-2.5rem)] lg:top-24
+        ${isOpen ? "translate-x-0 lg:left-6" : "-translate-x-full"}`}
         >
             <div className="h-full flex flex-col">
                 <div className="pt-6 px-4">

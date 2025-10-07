@@ -3,11 +3,10 @@ import {
     Mail,
     PenLine,
     Trash2,
-    User,
     Fingerprint,
 } from "lucide-react";
 import React from "react";
-import Button from "../ui/button";
+import Button from "@/Components/ui/button";
 
 const ShowAkunCard = ({
     users,
@@ -25,47 +24,46 @@ const ShowAkunCard = ({
             {users.map((user, index) => (
                 <div
                     key={user.id}
-                    className="p-4 space-y-3 border rounded-xl border-slate-300"
+                    className="space-y-3 border rounded-xl border-slate-300"
                 >
-                    <div className="flex items-start justify-between">
+                    <div className="p-4 flex items-start justify-between">
                         <div className="flex items-start gap-2">
                             <p className="text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
-                            <div className="flex flex-col gap-1">
-                                <div className="flex items-center gap-2">
-                                    <User className="w-4 h-4 text-gray-600" />
-                                    <p className="text-sm font-medium text-gray-800">
-                                        {user.name}
-                                    </p>
-                                </div>
-                                <div className="flex items-center gap-2">
+                            <div className="flex flex-col gap-2">
+                                <p className="text-sm font-medium text-gray-800">
+                                    {user.name}
+                                </p>
+
+                                <div className="flex items-center gap-2 text-gray-800">
                                     {isSiswa ? (
-                                        <Fingerprint className="w-4 h-4 text-gray-600" />
+                                        <Fingerprint className="w-5 h-5" />
                                     ) : (
-                                        <Mail className="w-4 h-4 text-gray-600" />
+                                        <Mail className="w-5 h-5" />
                                     )}
-                                    <p className="text-sm font-medium text-gray-800">
+                                    <div className="flex flex-col text-sm font-medium">
                                         <span className="font-normal">
                                             {isSiswa ? "NIS: " : "Email: "}
                                         </span>
                                         {isSiswa ? user.nis : user.email}
-                                    </p>
+                                    </div>
                                 </div>
-                                <div className="flex items-center gap-2">
-                                    <LockKeyholeOpen className="w-4 h-4 text-gray-600" />
-                                    <p className="text-sm font-medium text-gray-800">
-                                        <span className="font-normal">
+
+                                <div className="flex items-center gap-2 text-gray-800">
+                                    <LockKeyholeOpen className="w-5 h-5" />
+                                    <div className="flex flex-col text-sm font-medium">
+                                        <span className="text-xs font-normal">
                                             Role:{" "}
                                         </span>
                                         {user.role}
-                                    </p>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-300">
+                    <div className="p-2 border-t rounded-b-xl border-slate-300 bg-gray-100">
                         <div className="flex justify-end gap-2">
                             {type === "pending" && role !== "pengawas" && (
                                 <>

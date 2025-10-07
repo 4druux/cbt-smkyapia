@@ -15,7 +15,6 @@ const PesertaSesi = ({
     const [isInfoModalOpen, setIsInfoModalOpen] = useState(false);
 
     useEffect(() => {
-        onFormChange("peserta_ids", []);
         setLastCheckedId(null);
     }, [filterKelas]);
 

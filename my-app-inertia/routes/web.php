@@ -23,7 +23,11 @@ Route::middleware(['auth', 'prevent.caching'])->group(function () {
     Route::prefix('sesi-ujian')->name('sesi-ujian.')->group(function() {
         Route::inertia('/', 'Proctor/ManajemenUjian/Sesi/IndexPage')->name('index');
         Route::inertia('/create', 'Proctor/ManajemenUjian/Sesi/CreatePage')->name('create');
-        Route::inertia('/{sesiUjian}/edit', 'Proctor/ManajemenUjian/Sesi/EditPage')->name('edit');
+        Route::get('/{sesiUjian}/edit', function ($sesiUjian) {
+            return Inertia::render('Proctor/ManajemenUjian/Sesi/EditPage', [
+                'sesiUjian' => $sesiUjian
+            ]);
+        })->name('edit');
     });
 
     Route::inertia('/kelola-ruangan', 'Proctor/ManajemenUjian/Ruangan/RuanganPage')->name('kelola-ruangan.index');

@@ -19,7 +19,7 @@ export default function MainLayout({ children, title }) {
     };
 
     useEffect(() => {
-        const isMobile = window.innerWidth < 768;
+        const isMobile = window.innerWidth < 1024;
         if (isSidebarOpen && isMobile) {
             document.body.style.overflow = "hidden";
         } else {
@@ -32,7 +32,7 @@ export default function MainLayout({ children, title }) {
 
     useEffect(() => {
         const handleResize = () => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
                 setIsSidebarOpen(false);
             } else {
                 setIsSidebarOpen(true);
@@ -45,7 +45,7 @@ export default function MainLayout({ children, title }) {
 
     useEffect(() => {
         const handleNavigate = () => {
-            if (window.innerWidth < 768) {
+            if (window.innerWidth < 1024) {
                 setIsSidebarOpen(false);
             }
         };
@@ -79,15 +79,15 @@ export default function MainLayout({ children, title }) {
                                 ? "opacity-100 pointer-events-auto"
                                 : "opacity-0 pointer-events-none"
                         }
-                        md:hidden
+                        lg:hidden
                     `}
                 />
                 <div
-                    className={`w-full transition-all duration-300 ease-in-out ${
-                        isSidebarOpen ? "md:ml-72" : "md:ml-0"
+                    className={`min-w-0 w-full transition-all duration-300 ease-in-out ${
+                        isSidebarOpen ? "lg:ml-72" : "lg:ml-0"
                     }`}
                 >
-                    <main className="px-4 md:px-6 mt-2">{children}</main>
+                    <main className="px-4 lg:px-6 mt-2">{children}</main>
                 </div>
             </div>
         </div>

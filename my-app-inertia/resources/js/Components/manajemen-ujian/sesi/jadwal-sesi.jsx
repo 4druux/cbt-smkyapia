@@ -1,4 +1,4 @@
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useRef } from "react";
 import Select from "@/Components/common/select";
 import { PlusCircle, Sparkles, Trash2 } from "lucide-react";
 import Button from "@/Components/ui/button";
@@ -12,6 +12,7 @@ const JadwalSesi = ({
     masterPengawas,
     errors,
 }) => {
+    const navRef = useRef(null);
     const dynamicDays = useMemo(() => {
         if (!jadwalSlots || jadwalSlots.length === 0) return [];
         return [...new Set(jadwalSlots.map((slot) => slot.hari))];
@@ -140,6 +141,16 @@ const JadwalSesi = ({
         label: p.name,
     }));
 
+    const handleDayClick = (day, event) => {
+        setActiveDay(day);
+
+        event.currentTarget.scrollIntoView({
+            behavior: "smooth",
+            block: "nearest",
+            inline: "center",
+        });
+    };
+
     return (
         <div className="rounded-lg border p-3 md:p-6">
             <div className="flex justify-between items-center mb-4">
@@ -156,15 +167,15 @@ const JadwalSesi = ({
                     Isi Otomatis
                 </Button>
             </div>
-            <div className="border-b border-gray-200">
+            <div ref={navRef} className="border-b border-gray-200">
                 <nav
-                    className="-mb-px flex space-x-2 md:space-x-6 overflow-x-auto"
+                    className="-mb-px flex space-x-2 md:space-x-3 overflow-x-auto"
                     aria-label="Tabs"
                 >
                     {dynamicDays.map((day) => (
                         <button
                             key={day}
-                            onClick={() => setActiveDay(day)}
+                            onClick={(e) => handleDayClick(day, e)}
                             type="button"
                             className={`relative whitespace-nowrap py-3 px-1 font-medium text-sm capitalize ${
                                 activeDay === day
@@ -189,9 +200,9 @@ const JadwalSesi = ({
                     return (
                         <div
                             key={originalIndex}
-                            className="flex flex-col md:flex-row md:items-center md:justify-between gap-4"
+                            className="flex flex-col xl:flex-row xl:items-center xl:justify-between gap-4"
                         >
-                            <div className="grid grid-cols-1 md:grid-cols-4 gap-3 w-full">
+                            <div className="grid grid-cols-1 xl:grid-cols-4 gap-3 w-full">
                                 <SelectTimePicker
                                     label="Waktu Mulai"
                                     value={slot.waktu_mulai}

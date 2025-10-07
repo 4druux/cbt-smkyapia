@@ -27,7 +27,7 @@ const Button = ({
     const variantStyles = {
         primary: "bg-indigo-600 text-white hover:bg-indigo-700",
         outline:
-            "border border-indigo-600 bg-transparent text-indigo-600 hover:bg-indigo-50",
+            "border border-indigo-600 bg-transparent text-indigo-600 hover:bg-indigo-100",
         danger: "border bg-red-50 border-red-600 text-red-600 hover:bg-red-100",
         success:
             "border bg-green-50 border-green-600 text-green-600 hover:bg-green-100",

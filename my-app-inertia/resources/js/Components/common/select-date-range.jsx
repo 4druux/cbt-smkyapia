@@ -3,7 +3,8 @@ import { DayPicker } from "react-day-picker";
 import { id as localeId } from "date-fns/locale";
 import { Calendar as CalendarIcon, ChevronDown } from "lucide-react";
 import "react-day-picker/dist/style.css";
-import { useDropdown } from "@/Hooks/use-dropdown";
+import { dropdownAnimation, useDropdown } from "@/Hooks/use-dropdown";
+import { AnimatePresence, motion } from "framer-motion";
 
 function cn(...inputs) {
     return inputs.filter(Boolean).join(" ");
@@ -88,31 +89,37 @@ export default function SelectDateRange({
                 </label>
             </div>
 
-            {isOpen && (
-                <div className="absolute z-20 mt-1 w-auto rounded-lg border border-slate-300 bg-white p-0 shadow-lg">
-                    <DayPicker
-                        locale={localeId}
-                        mode="range"
-                        selected={value}
-                        onSelect={onChange}
-                        defaultMonth={value?.from || new Date()}
-                        numberOfMonths={1}
-                        classNames={{
-                            months: "flex flex-row gap-4 p-6",
-                            caption_label: "text-sm font-medium",
-                            head_cell:
-                                "text-gray-500 rounded-md font-normal text-[0.7rem]",
-                            cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:!bg-indigo-50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md",
-                            day: "p-0 font-normal text-xs relative",
-                            day_selected:
-                                "!bg-indigo-600 text-white rounded-full transform scale-10",
-                            day_today: "!bg-indigo-100 text-indigo-800",
-                            day_range_middle:
-                                "aria-selected:!bg-indigo-100 aria-selected:text-indigo-900",
-                        }}
-                    />
-                </div>
-            )}
+            <AnimatePresence>
+                {isOpen && (
+                    <motion.div
+                        initial="hidden"
+                        animate="visible"
+                        exit="hidden"
+                        variants={dropdownAnimation.variants}
+                        transition={dropdownAnimation.transition}
+                        className="absolute z-20 mt-1 w-auto rounded-lg border border-slate-300 bg-white p-0 shadow-lg"
+                    >
+                        <DayPicker
+                            locale={localeId}
+                            mode="range"
+                            selected={value}
+                            onSelect={onChange}
+                            defaultMonth={value?.from || new Date()}
+                            numberOfMonths={1}
+                            classNames={{
+                                months: "flex flex-row gap-4 p-6",
+                                caption_label: "text-sm font-medium",
+                                head_cell:
+                                    "text-gray-500 rounded-md font-normal text-[0.7rem]",
+                                cell: "text-center text-sm p-0 relative [&:has([aria-selected])]:!bg-indigo-50 first:[&:has([aria-selected])]:rounded-l-md last:[&:has([aria-selected])]:rounded-r-md",
+                                day: "p-0 font-normal text-xs relative",
+                                day_selected:
+                                    "!bg-indigo-600 text-white rounded-full transform scale-10",
+                            }}
+                        />
+                    </motion.div>
+                )}
+            </AnimatePresence>
 
             {error && <p className="mt-1 text-xs text-red-500">{error}</p>}
         </div>

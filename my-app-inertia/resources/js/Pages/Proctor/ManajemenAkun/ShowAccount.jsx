@@ -108,7 +108,7 @@ const ShowAccount = () => {
                     <h3 className="mb-4 text-lg font-medium text-gray-700">
                         Persetujuan Pengguna Baru
                     </h3>
-                    <div className="hidden lg:block">
+                    <div className="hidden xl:block">
                         <ShowAkunTable
                             users={pendingUsers}
                             type="pending"
@@ -122,7 +122,7 @@ const ShowAccount = () => {
                             isProcessing={isProcessing}
                         />
                     </div>
-                    <div className="lg:hidden">
+                    <div className="xl:hidden">
                         <ShowAkunCard
                             users={pendingUsers}
                             type="pending"
@@ -144,7 +144,7 @@ const ShowAccount = () => {
                 </h3>
                 {approvedUsers.length > 0 ? (
                     <>
-                        <div className="hidden lg:block">
+                        <div className="hidden xl:block">
                             <ShowAkunTable
                                 users={approvedUsers}
                                 type="approved"
@@ -154,7 +154,7 @@ const ShowAccount = () => {
                                 onOpenResetPasswordModal={handleOpenModal}
                             />
                         </div>
-                        <div className="lg:hidden">
+                        <div className="xl:hidden">
                             <ShowAkunCard
                                 users={approvedUsers}
                                 type="approved"

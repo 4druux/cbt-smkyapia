@@ -1,4 +1,12 @@
-import { PenLine, Trash2, Save, X } from "lucide-react";
+import {
+    PenLine,
+    Trash2,
+    Save,
+    X,
+    Mars,
+    Venus,
+    Fingerprint,
+} from "lucide-react";
 import Button from "../ui/button";
 import InputField from "../common/input-field";
 
@@ -18,32 +26,49 @@ const ShowSiswaCard = ({
             {students.map((student, index) => (
                 <div
                     key={student.id}
-                    className="p-4 space-y-3 border rounded-xl border-slate-300"
+                    className="space-y-3 border rounded-xl border-slate-300"
                 >
-                    <div className="flex items-start justify-between">
+                    <div className="flex items-start justify-between p-4">
                         <div className="flex items-start gap-2">
                             <p className="text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-2">
                                 <p className="text-sm font-medium text-gray-800">
                                     {student.nama}
                                 </p>
-                                <p className="text-sm font-medium text-gray-800">
-                                    <span className="font-normal">NIS: </span>
-                                    {student.nis}
-                                </p>
-                                <p className="text-sm font-medium text-gray-800">
-                                    <span className="font-normal">JK: </span>
-                                    {student.jenis_kelamin === "L"
-                                        ? "Laki-laki"
-                                        : "Perempuan"}
-                                </p>
+
+                                <div className="flex items-center gap-2 text-gray-800">
+                                    <Fingerprint className="w-5 h-5" />
+                                    <div className="flex flex-col text-sm font-medium">
+                                        <span className="text-xs font-normal">
+                                            NIS:{" "}
+                                        </span>
+                                        {student.nis}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-gray-800">
+                                    {student.jenis_kelamin === "L" ? (
+                                        <Mars className="w-5 h-5" />
+                                    ) : (
+                                        <Venus className="w-5 h-5" />
+                                    )}
+
+                                    <div className="flex flex-col text-sm font-medium">
+                                        <span className="font-normal">
+                                            Jenis Kelamin:{" "}
+                                        </span>
+                                        {student.jenis_kelamin === "L"
+                                            ? "Laki-laki"
+                                            : "Perempuan"}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-300">
+                    <div className="p-2 border-t rounded-b-xl border-slate-300 bg-gray-100">
                         {editingId === student.id ? (
                             <div className="flex flex-col gap-3">
                                 <InputField

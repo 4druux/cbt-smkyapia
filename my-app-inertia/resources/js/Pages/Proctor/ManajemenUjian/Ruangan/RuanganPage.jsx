@@ -67,14 +67,14 @@ const RuanganPage = () => {
 
             {ruangans && ruangans.length > 0 ? (
                 <>
-                    <div className="hidden lg:block">
+                    <div className="hidden xl:block">
                         <RuanganTable
                             ruangans={ruangans}
                             onEdit={handleOpenModal}
                             onDelete={handleDeleteRuangan}
                         />
                     </div>
-                    <div className="lg:hidden">
+                    <div className="xl:hidden">
                         <RuanganCard
                             ruangans={ruangans}
                             onEdit={handleOpenModal}

@@ -1,5 +1,5 @@
 import Button from "@/Components/ui/button";
-import { PenLine, Trash2 } from "lucide-react";
+import { BookOpen, Hash, PenLine, Trash2 } from "lucide-react";
 
 const MapelCard = ({ mapels, onEdit, onDelete, isProcessing }) => {
     return (
@@ -7,29 +7,42 @@ const MapelCard = ({ mapels, onEdit, onDelete, isProcessing }) => {
             {mapels.map((mapel, index) => (
                 <div
                     key={mapel.id}
-                    className="p-4 space-y-3 border rounded-xl border-slate-300"
+                    className="space-y-3 border rounded-xl border-slate-300"
                 >
-                    <div className="flex items-start justify-between">
+                    <div className="p-4 flex items-start justify-between">
                         <div className="flex items-start gap-2">
                             <p className="text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </p>
-                            <div className="flex flex-col gap-1">
+                            <div className="flex flex-col gap-2">
                                 <p className="text-sm font-medium text-gray-800">
-                                    <span className="font-normal">
-                                        Mata Pelajaran:{" "}
-                                    </span>
                                     {mapel.nama_mapel}
                                 </p>
-                                <p className="text-sm font-medium text-gray-800">
-                                    <span className="font-normal">Kode: </span>
-                                    {mapel.kode_mapel}
-                                </p>
+
+                                <div className="flex items-center gap-2 text-gray-800">
+                                    <Hash className="w-5 h-5" />
+                                    <div className="flex flex-col text-sm font-medium">
+                                        <span className="text-xs font-normal">
+                                            Kode:{" "}
+                                        </span>
+                                        {mapel.kode_mapel}
+                                    </div>
+                                </div>
+
+                                <div className="flex items-center gap-2 text-gray-800">
+                                    <BookOpen className="w-5 h-5" />
+                                    <div className="flex flex-col text-sm font-medium">
+                                        <span className="text-xs font-normal">
+                                            Mata Pelajaran:{" "}
+                                        </span>
+                                        {mapel.nama_mapel}
+                                    </div>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div className="pt-3 border-t border-slate-300">
+                    <div className="p-2 border-t rounded-b-xl border-slate-300 bg-gray-100">
                         <div className="flex justify-end gap-2">
                             <Button
                                 size="md"

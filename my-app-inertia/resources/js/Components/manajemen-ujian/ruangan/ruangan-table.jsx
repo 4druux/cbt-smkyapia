@@ -41,7 +41,7 @@ const RuanganTable = ({ ruangans, onEdit, onDelete, isProcessing }) => {
                                 {ruangan.nama_ruangan}
                             </td>
                             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                {ruangan.kapasitas}
+                                {ruangan.kapasitas} orang
                             </td>
                             <td className="whitespace-nowrap px-6 py-4 text-center text-sm">
                                 <div className="flex items-center justify-center gap-2">

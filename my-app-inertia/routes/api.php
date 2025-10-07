@@ -66,6 +66,7 @@ Route::middleware('auth:sanctum')->group(function () {
     });
 
     // Manajemen Ruangan
+    Route::get('/ruangan/available', [RuanganController::class, 'getAvailableRuangans']);
     Route::apiResource('ruangan', RuanganController::class);
     Route::apiResource('mata-pelajaran', MataPelajaranController::class);
     Route::apiResource('sesi-ujian', SesiUjianController::class); 

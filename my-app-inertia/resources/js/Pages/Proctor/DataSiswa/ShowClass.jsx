@@ -121,7 +121,7 @@ const ShowClass = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 lg:gap-4">
+            <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between mb-6 xl:gap-4">
                 <HeaderContent
                     Icon={Users}
                     title="Daftar Siswa"
@@ -152,10 +152,10 @@ const ShowClass = () => {
 
             {students && students.length > 0 ? (
                 <>
-                    <div className="hidden lg:block">
+                    <div className="hidden xl:block">
                         <ShowSiswaTable {...tableProps} />
                     </div>
-                    <div className="lg:hidden">
+                    <div className="xl:hidden">
                         <ShowSiswaCard {...tableProps} />
                     </div>
                 </>

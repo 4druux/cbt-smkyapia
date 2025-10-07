@@ -7,6 +7,7 @@ import DataNotFound from "@/Components/ui/data-not-found";
 import { PlusCircle, CalendarDays } from "lucide-react";
 import { useSesiUjian } from "@/Hooks/manajemen-ujian/use-sesi-ujian";
 import SesiUjianTable from "@/Components/manajemen-ujian/sesi/sesi-ujian-table";
+import SesiUjianCard from "@/Components/manajemen-ujian/sesi/sesi-ujian-card";
 
 const IndexPage = () => {
     const { sesiUjians, isLoading, error, handleDelete } = useSesiUjian();
@@ -52,10 +53,21 @@ const IndexPage = () => {
             </div>
 
             {sesiUjians && sesiUjians.length > 0 ? (
-                <SesiUjianTable
-                    sesiUjians={sesiUjians}
-                    onDelete={handleDelete}
-                />
+                <>
+                    <div className="hidden xl:block">
+                        <SesiUjianTable
+                            sesiUjians={sesiUjians}
+                            onDelete={handleDelete}
+                        />
+                    </div>
+
+                    <div className="xl:hidden">
+                        <SesiUjianCard
+                            sesiUjians={sesiUjians}
+                            onDelete={handleDelete}
+                        />
+                    </div>
+                </>
             ) : (
                 <DataNotFound message="Belum ada sesi ujian yang dibuat. Silakan buat sesi baru." />
             )}

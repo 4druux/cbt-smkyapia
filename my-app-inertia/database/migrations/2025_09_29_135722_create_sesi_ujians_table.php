@@ -13,6 +13,8 @@ return new class extends Migration {
             $table->foreignId('academic_year_id')->constrained('academic_years')->onDelete('cascade');
             $table->enum('semester', ['ganjil', 'genap']);
             $table->enum('jenis_asesmen', ['asts', 'asas']);
+            $table->date('tanggal_mulai')->nullable();
+            $table->date('tanggal_selesai')->nullable();
             $table->timestamps();
         });
     }

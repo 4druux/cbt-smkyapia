@@ -35,6 +35,20 @@ const InformasiSesi = ({ formData, masterData, handleFormChange, errors }) => {
                     error={errors.jenis_asesmen?.[0]}
                 />
 
+                
+                <SelectDateRange
+                    label="Rentang Tanggal Ujian"
+                    description="Pilih tanggal mulai dan selesai ujian."
+                    value={formData.date_range}
+                    onChange={(v) =>
+                        handleFormChange(
+                            "date_range",
+                            v || { from: undefined, to: undefined }
+                        )
+                    }
+                    error={errors.date_range?.[0]}
+                />
+
                 <Select
                     label="Semester"
                     title="Pilih Semester"
@@ -48,18 +62,6 @@ const InformasiSesi = ({ formData, masterData, handleFormChange, errors }) => {
                     error={errors.semester?.[0]}
                 />
 
-                <SelectDateRange
-                    label="Rentang Tanggal Ujian"
-                    description="Pilih tanggal mulai dan selesai ujian."
-                    value={formData.date_range}
-                    onChange={(v) =>
-                        handleFormChange(
-                            "date_range",
-                            v || { from: undefined, to: undefined }
-                        )
-                    }
-                    error={errors.date_range?.[0]}
-                />
 
                 <Select
                     label="Tahun Ajaran"

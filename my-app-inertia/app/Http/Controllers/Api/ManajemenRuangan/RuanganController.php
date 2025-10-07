@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api\ManajemenRuangan;
 
 use App\Http\Controllers\Controller;
 use App\Models\Ruangan;
+use App\Models\SesiUjian;
 use Illuminate\Http\Request;
 
 class RuanganController extends Controller
@@ -55,5 +56,31 @@ class RuanganController extends Controller
         $ruangan->delete();
 
         return response()->json(['message' => 'Ruangan berhasil dihapus.']);
+    }
+
+    public function getAvailableRuangans(Request $request)
+    {
+        $request->validate([
+            'start_date' => 'required|date',
+            'end_date' => 'required|date|after_or_equal:start_date',
+            'exclude_session_id' => 'nullable|exists:sesi_ujians,id'
+        ]);
+
+        $startDate = $request->query('start_date');
+        $endDate = $request->query('end_date');
+        $excludeSessionId = $request->query('exclude_session_id');
+
+        $bookedRoomIds = SesiUjian::where(function ($query) use ($startDate, $endDate) {
+                $query->where('tanggal_mulai', '<=', $endDate)
+                ->where('tanggal_selesai', '>=', $startDate);
+        })
+        ->when($excludeSessionId, function ($query) use ($excludeSessionId) {
+            return $query->where('id', '!=', $excludeSessionId);
+        })
+        ->pluck('ruangan_id')
+        ->unique();
+
+        $availableRuangans = Ruangan::whereNotIn('id', $bookedRoomIds)->get();
+        return response()->json($availableRuangans);
     }
 }

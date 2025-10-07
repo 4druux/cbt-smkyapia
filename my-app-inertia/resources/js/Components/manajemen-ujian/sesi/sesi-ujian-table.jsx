@@ -1,8 +1,15 @@
-import { PenLine, Trash2 } from "lucide-react";
 import React from "react";
+import { PenLine, Trash2 } from "lucide-react";
 import Button from "@/Components/ui/button";
+import { format } from "date-fns";
+import { id as localeId } from "date-fns/locale";
 
 const SesiUjianTable = ({ sesiUjians, onDelete }) => {
+    const formatDate = (dateString) => {
+        if (!dateString) return "-";
+        return format(new Date(dateString), "d MMM yyyy", { locale: localeId });
+    };
+
     return (
         <div className="overflow-x-auto">
             <table className="w-full">
@@ -15,18 +22,21 @@ const SesiUjianTable = ({ sesiUjians, onDelete }) => {
                             Ruangan
                         </th>
                         <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                            Tanggal
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                            Waktu
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
-                            Tipe
-                        </th>
-                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
                             Peserta
                         </th>
-                        <th className="px-6 py-3 text-right text-xs font-medium uppercase tracking-wider text-gray-500">
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                            Jenis Asesmen
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                            Tanggal Pelaksanaan
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                            Semester
+                        </th>
+                        <th className="px-6 py-3 text-left text-xs font-medium uppercase tracking-wider text-gray-500">
+                            Tahun Ajaran
+                        </th>
+                        <th className="w-32 px-6 py-3 text-center text-xs font-medium uppercase tracking-wider text-gray-500">
                             Aksi
                         </th>
                     </tr>
@@ -40,21 +50,27 @@ const SesiUjianTable = ({ sesiUjians, onDelete }) => {
                             <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-800">
                                 {index + 1}.
                             </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm font-medium text-gray-700">
-                                {sesi.ruangan?.kode_ruangan || "-"}
-                            </td>
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-800">
-                                {sesi.tanggal_ujian || "-"}
-                            </td>
                             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
-                                {`${sesi.waktu_mulai?.slice(0, 5) || "??"}:${
-                                    sesi.waktu_selesai?.slice(0, 5) || "??"
-                                }`}
-                            </td>{" "}
-                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">{`${sesi.semester.toUpperCase()} / ${sesi.jenis_asesmen.toUpperCase()}`}</td>
+                                {sesi.ruangan?.nama_ruangan || "-"} (
+                                {sesi.ruangan?.kode_ruangan || "-"})
+                            </td>
                             <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
                                 {sesi.pesertas.length} orang
                             </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                {sesi.jenis_asesmen.toUpperCase() || "-"}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                {formatDate(sesi.tanggal_mulai)} -{" "}
+                                {formatDate(sesi.tanggal_selesai)}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                {sesi.semester.toUpperCase() || "-"}
+                            </td>
+                            <td className="whitespace-nowrap px-6 py-4 text-sm text-gray-500">
+                                {sesi.academic_year?.year || "-"}
+                            </td>
+
                             <td className="whitespace-nowrap px-6 py-4 text-right text-sm">
                                 <div className="flex items-center justify-end gap-2">
                                     <Button
@@ -66,7 +82,6 @@ const SesiUjianTable = ({ sesiUjians, onDelete }) => {
                                             <PenLine className="w-4 h-4" />
                                         }
                                     />
-
                                     <Button
                                         size="sm"
                                         variant="danger"

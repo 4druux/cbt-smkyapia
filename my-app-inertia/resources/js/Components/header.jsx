@@ -58,8 +58,8 @@ const Header = ({ onMenuClick }) => {
                 </div>
             )}
 
-            <header className="md:py-3 md:px-6 text-gray-700 sticky top-0 z-30">
-                <div className="flex items-center justify-between bg-white md:border border-gray-300 rounded-lg md:shadow-sm py-3 md:px-4">
+            <header className="lg:py-3 lg:px-6 text-gray-700 sticky top-0 z-30">
+                <div className="flex items-center justify-between bg-white lg:border border-gray-300 rounded-lg lg:shadow-sm py-3 lg:px-4">
                     <div className="flex items-center gap-1">
                         {/* <img
                         src="/images/logo-jurusan.png"

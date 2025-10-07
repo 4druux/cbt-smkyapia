@@ -67,7 +67,7 @@ const MapelPage = () => {
 
             {mapels && mapels.length > 0 ? (
                 <>
-                    <div className="hidden lg:block">
+                    <div className="hidden xl:block">
                         <MapelTable
                             mapels={mapels}
                             onEdit={handleOpenModal}
@@ -75,7 +75,7 @@ const MapelPage = () => {
                         />
                     </div>
 
-                    <div className="lg:hidden">
+                    <div className="xl:hidden">
                         <MapelCard
                             mapels={mapels}
                             onEdit={handleOpenModal}
