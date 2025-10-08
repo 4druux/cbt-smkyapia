@@ -58,7 +58,7 @@ export default function SignInForm() {
                 <InputField
                     id="email"
                     name="email"
-                    label="Email atau NIS"
+                    label="Email atau No Peserta"
                     type="text"
                     value={values.email}
                     onChange={handleChange}

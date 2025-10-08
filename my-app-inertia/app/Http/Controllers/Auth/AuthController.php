@@ -52,11 +52,13 @@ class AuthController extends Controller
             'password' => 'required|string',
         ]);
 
-        $loginField = filter_var($request->email, FILTER_VALIDATE_EMAIL) ? 'email' : 'nis';
+        $loginInput = $request->input('email');
+        $password = $request->input('password');
+        $loginField = filter_var($loginInput, FILTER_VALIDATE_EMAIL) ? 'email' : 'no_peserta';
 
         $credentials = [
-            $loginField => $request->email,
-            'password' => $request->password
+            $loginField => $loginInput,
+            'password' => $password
         ];
 
         if (!Auth::attempt($credentials)) {
@@ -72,7 +74,7 @@ class AuthController extends Controller
             $request->session()->regenerateToken();
 
             throw ValidationException::withMessages([
-                'email' => 'Akun Anda sedang menunggu persetujuan Super Admin.',
+                'login' => 'Akun Anda sedang menunggu persetujuan Super Admin.',
             ]);
         }
 

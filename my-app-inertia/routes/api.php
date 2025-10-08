@@ -1,8 +1,8 @@
 <?php
 
-use App\Http\Controllers\Api\ManajemenRuangan\MataPelajaranController;
-use App\Http\Controllers\Api\ManajemenRuangan\RuanganController;
-use App\Http\Controllers\Api\ManajemenRuangan\SesiUjianController;
+use App\Http\Controllers\Api\ManajemenUjian\MataPelajaranController;
+use App\Http\Controllers\Api\ManajemenUjian\RuanganController;
+use App\Http\Controllers\Api\ManajemenUjian\SesiUjianController;
 use App\Http\Controllers\Api\UserManagementController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\AuthController;

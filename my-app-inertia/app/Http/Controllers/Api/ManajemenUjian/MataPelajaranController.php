@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Http\Controllers\Api\ManajemenRuangan;
+namespace App\Http\Controllers\Api\ManajemenUjian;
 
 use App\Http\Controllers\Controller;
 use App\Models\MataPelajaran;

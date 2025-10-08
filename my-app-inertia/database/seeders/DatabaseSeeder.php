@@ -60,6 +60,16 @@ class DatabaseSeeder extends Seeder
             'nama_kelas' => 'XI',
             'kelompok' => 'TKJ 1'
         ]);
+        Kelas::create([
+            'jurusan_id' => $jurusanJarkom->id,
+            'nama_kelas' => 'X',
+            'kelompok' => 'TKJ 2'
+        ]);
+        Kelas::create([
+            'jurusan_id' => $jurusanJarkom->id,
+            'nama_kelas' => 'XI',
+            'kelompok' => 'TKJ 2'
+        ]);
 
         DB::table('mata_pelajarans')->delete();
         $mapels = [

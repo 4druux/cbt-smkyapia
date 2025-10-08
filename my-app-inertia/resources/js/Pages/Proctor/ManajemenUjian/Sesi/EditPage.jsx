@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import axios from "axios";
 import PageContent from "@/Components/ui/page-content";
 import HeaderContent from "@/Components/ui/header-content";
@@ -39,6 +39,33 @@ const EditPage = ({ sesiUjian: sesiUjianId }) => {
         handleSubmit,
     } = useSesiUjianForm(initialData);
 
+    const selectedRuangan = masterData.ruangans.find(
+        (r) => r.id === formData.ruangan_id
+    );
+    const kapasitasRuangan = selectedRuangan ? selectedRuangan.kapasitas : 0;
+
+    const uniqueClasses = useMemo(() => {
+        if (!formData.peserta_ids || !masterData.allSiswa) {
+            return [];
+        }
+
+        const selectedSiswa = masterData.allSiswa.filter((siswa) =>
+            formData.peserta_ids.includes(siswa.id)
+        );
+
+        const kelasMap = new Map();
+        selectedSiswa.forEach((siswa) => {
+            if (siswa.kelas && !kelasMap.has(siswa.kelas.id)) {
+                kelasMap.set(siswa.kelas.id, {
+                    kelas: siswa.kelas,
+                    academic_year: siswa.academic_year,
+                });
+            }
+        });
+
+        return Array.from(kelasMap.values());
+    }, [formData.peserta_ids, masterData.allSiswa]);
+
     const isPageLoading = isLoadingData || isLoadingMasterData;
 
     const breadcrumbItems = [
@@ -53,11 +80,6 @@ const EditPage = ({ sesiUjian: sesiUjianId }) => {
             </div>
         );
     }
-
-    const selectedRuangan = masterData.ruangans.find(
-        (r) => r.id === formData.ruangan_id
-    );
-    const kapasitasRuangan = selectedRuangan ? selectedRuangan.kapasitas : 0;
 
     return (
         <PageContent
@@ -79,19 +101,20 @@ const EditPage = ({ sesiUjian: sesiUjianId }) => {
                     errors={errors}
                 />
 
-                <JadwalSesi
-                    jadwalSlots={formData.jadwal_slots}
-                    setFormData={setFormData}
-                    masterMapels={masterData.mapels}
-                    masterPengawas={masterData.pengawas}
-                    errors={errors}
-                />
-
                 <PesertaSesi
                     allSiswa={masterData.allSiswa}
                     selectedIds={formData.peserta_ids}
                     onFormChange={handleFormChange}
                     kapasitas={kapasitasRuangan}
+                    errors={errors}
+                />
+
+                <JadwalSesi
+                    jadwalSlots={formData.jadwal_slots}
+                    setFormData={setFormData}
+                    masterMapels={masterData.mapels}
+                    masterPengawas={masterData.pengawas}
+                    uniqueClasses={uniqueClasses}
                     errors={errors}
                 />
 

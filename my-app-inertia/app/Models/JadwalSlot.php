@@ -8,6 +8,7 @@ class JadwalSlot extends Model
     use HasFactory;
     protected $fillable = [
         'sesi_ujian_id',
+        'kelas_id',
         'mata_pelajaran_id',
         'pengawas_id',
         'hari',
@@ -22,6 +23,10 @@ class JadwalSlot extends Model
 
     public function sesiUjian() {
         return $this->belongsTo(SesiUjian::class);
+    }
+
+    public function kelas(){
+        return $this->belongsTo(Kelas::class);
     }
 
     public function mataPelajaran() {

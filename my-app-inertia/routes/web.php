@@ -21,7 +21,7 @@ Route::middleware(['auth', 'prevent.caching'])->group(function () {
     });
 
     Route::prefix('sesi-ujian')->name('sesi-ujian.')->group(function() {
-        Route::inertia('/', 'Proctor/ManajemenUjian/Sesi/IndexPage')->name('index');
+        Route::inertia('/', 'Proctor/ManajemenUjian/Sesi/SesiPage')->name('index');
         Route::inertia('/create', 'Proctor/ManajemenUjian/Sesi/CreatePage')->name('create');
         Route::get('/{sesiUjian}/edit', function ($sesiUjian) {
             return Inertia::render('Proctor/ManajemenUjian/Sesi/EditPage', [
@@ -32,9 +32,9 @@ Route::middleware(['auth', 'prevent.caching'])->group(function () {
 
     Route::inertia('/kelola-ruangan', 'Proctor/ManajemenUjian/Ruangan/RuanganPage')->name('kelola-ruangan.index');
     Route::inertia('/kelola-mapel', 'Proctor/ManajemenUjian/Mapel/MapelPage')->name('kelola-mapel.index');
+    Route::inertia('/kelola-soal', 'Proctor/ManajemenUjian/Soal/SoalPage')->name('kelola-soal.index');
     Route::inertia('/kelola-pengawas', 'Proctor/ManajemenUjian/Pengawas/PengawasPage')->name('kelola-pengawas.index');
 
-    Route::inertia('/kelola-ujian', 'Proctor/KelolaUjian/HomePage')->name('kelola-ujian');
     Route::inertia('/ujian-online', 'Student/UjianOnline/HomePage')->name('ujian-online');
 });
 

@@ -35,7 +35,6 @@ const InformasiSesi = ({ formData, masterData, handleFormChange, errors }) => {
                     error={errors.jenis_asesmen?.[0]}
                 />
 
-                
                 <SelectDateRange
                     label="Rentang Tanggal Ujian"
                     description="Pilih tanggal mulai dan selesai ujian."
@@ -61,7 +60,6 @@ const InformasiSesi = ({ formData, masterData, handleFormChange, errors }) => {
                     onChange={(v) => handleFormChange("semester", v)}
                     error={errors.semester?.[0]}
                 />
-
 
                 <Select
                     label="Tahun Ajaran"

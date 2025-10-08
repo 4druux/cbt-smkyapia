@@ -156,29 +156,13 @@ export const useSesiUjianForm = (sesiUjian = null) => {
         isEditing,
         sesiUjian,
     ]);
-    
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         setIsProcessing(true);
         setErrors({});
 
-        const cleanedSlots = formData.jadwal_slots.filter((slot) => {
-            const hasTime = slot.waktu_mulai && slot.waktu_selesai;
-            const isIstirahat = slot.mata_pelajaran_id === "istirahat";
-            const hasMapelAndPengawas =
-                slot.mata_pelajaran_id && slot.pengawas_id;
-            return hasTime && (isIstirahat || hasMapelAndPengawas);
-        });
-
-        const finalSlots = cleanedSlots.map((slot) => {
-            if (slot.mata_pelajaran_id === "istirahat") {
-                return {
-                    ...slot,
-                    mata_pelajaran_id: null,
-                };
-            }
-            return slot;
-        });
+        const finalSlots = formData.jadwal_slots;
 
         if (
             finalSlots.length === 0 &&
@@ -220,7 +204,7 @@ export const useSesiUjianForm = (sesiUjian = null) => {
                 setErrors(validationErrors);
                 const firstErrorKey = Object.keys(validationErrors)[0];
                 const firstErrorMessage = validationErrors[firstErrorKey][0];
-                toast.error(`Kesalahan: ${firstErrorMessage}`);
+                toast.error(firstErrorMessage);
             } else {
                 toast.error(
                     error.response?.data?.message ||

@@ -10,21 +10,35 @@ const JadwalSesi = ({
     setFormData,
     masterMapels,
     masterPengawas,
+    uniqueClasses,
     errors,
 }) => {
+    const [activeDay, setActiveDay] = useState("");
+    const [activeKelasId, setActiveKelasId] = useState(null);
+
     const navRef = useRef(null);
     const dynamicDays = useMemo(() => {
         if (!jadwalSlots || jadwalSlots.length === 0) return [];
         return [...new Set(jadwalSlots.map((slot) => slot.hari))];
     }, [jadwalSlots]);
 
-    const [activeDay, setActiveDay] = useState("");
-
     useEffect(() => {
         if (dynamicDays.length > 0 && !dynamicDays.includes(activeDay)) {
             setActiveDay(dynamicDays[0]);
         }
     }, [dynamicDays, activeDay]);
+
+    useEffect(() => {
+        const isCurrentActiveInList = uniqueClasses.some(
+            ({ kelas }) => kelas.id === activeKelasId
+        );
+
+        if (!isCurrentActiveInList && uniqueClasses.length > 0) {
+            setActiveKelasId(uniqueClasses[0].kelas.id);
+        } else if (uniqueClasses.length === 0) {
+            setActiveKelasId(null);
+        }
+    }, [uniqueClasses]);
 
     const handleSlotChange = (index, field, value) => {
         const updatedSlots = [...jadwalSlots];
@@ -37,7 +51,7 @@ const JadwalSesi = ({
 
     const addSlot = () => {
         if (!activeDay) {
-            toast.error("Pilih rentang tanggal terlebih dahulu.");
+            toast.error("Pilih rentang tanggal dan peserta ujian terlebih dahulu.");
             return;
         }
         const newSlot = {
@@ -45,6 +59,7 @@ const JadwalSesi = ({
             waktu_mulai: "",
             waktu_selesai: "",
             mata_pelajaran_id: null,
+            kelas_id: activeKelasId,
             pengawas_id: null,
         };
         setFormData((prev) => ({
@@ -60,8 +75,10 @@ const JadwalSesi = ({
     };
 
     const handleAutoFill = () => {
-        if (jadwalSlots.length === 0) {
-            toast.error("Pilih rentang tanggal terlebih dahulu.");
+        if (dynamicDays.length === 0 || uniqueClasses.length === 0) {
+            toast.error(
+                "Pilih rentang tanggal dan peserta ujian terlebih dahulu."
+            );
             return;
         }
         if (masterMapels.length === 0 || masterPengawas.length === 0) {
@@ -87,46 +104,56 @@ const JadwalSesi = ({
         let mapelIndex = 0;
         let pengawasIndex = 0;
 
-        const newSlots = [];
-        const uniqueDays = [...new Set(jadwalSlots.map((slot) => slot.hari))];
+        const allNewSlots = [];
 
-        uniqueDays.forEach((day) => {
-            const daySchedule = dailyScheduleTemplate.map((template) => {
-                const mapel =
-                    shuffledMapels[mapelIndex % shuffledMapels.length];
-                const pengawas =
-                    shuffledPengawas[pengawasIndex % shuffledPengawas.length];
-                mapelIndex++;
-                pengawasIndex++;
+        dynamicDays.forEach((day) => {
+            uniqueClasses.forEach(({ kelas }) => {
+                const dayAndClassSchedule = dailyScheduleTemplate.map(
+                    (template) => {
+                        const mapel =
+                            shuffledMapels[mapelIndex % shuffledMapels.length];
+                        const pengawas =
+                            shuffledPengawas[
+                                pengawasIndex % shuffledPengawas.length
+                            ];
+                        mapelIndex++;
+                        pengawasIndex++;
 
-                if (template.type === "istirahat") {
-                    return {
-                        hari: day,
-                        waktu_mulai: template.start,
-                        waktu_selesai: template.end,
-                        mata_pelajaran_id: "istirahat",
-                        pengawas_id: null,
-                    };
-                }
-                return {
-                    hari: day,
-                    waktu_mulai: template.start,
-                    waktu_selesai: template.end,
-                    mata_pelajaran_id: mapel.id,
-                    pengawas_id: pengawas.id,
-                };
+                        if (template.type === "istirahat") {
+                            return {
+                                hari: day,
+                                kelas_id: kelas.id,
+                                waktu_mulai: template.start,
+                                waktu_selesai: template.end,
+                                mata_pelajaran_id: "istirahat",
+                                pengawas_id: null,
+                            };
+                        }
+                        return {
+                            hari: day,
+                            kelas_id: kelas.id,
+                            waktu_mulai: template.start,
+                            waktu_selesai: template.end,
+                            mata_pelajaran_id: mapel.id,
+                            pengawas_id: pengawas.id,
+                        };
+                    }
+                );
+                allNewSlots.push(...dayAndClassSchedule);
             });
-            newSlots.push(...daySchedule);
         });
 
-        setFormData((prev) => ({ ...prev, jadwal_slots: newSlots }));
-        toast.success("Jadwal berhasil diisi secara otomatis!");
+        setFormData((prev) => ({ ...prev, jadwal_slots: allNewSlots }));
+        toast.success(
+            "Jadwal berhasil diisi otomatis untuk semua hari dan kelas!"
+        );
     };
 
-    const slotsForActiveDay = jadwalSlots.filter(
-        (slot) => slot.hari === activeDay
+    const slotsForActiveDayAndKelas = jadwalSlots.filter(
+        (slot) => slot.hari === activeDay && slot.kelas_id === activeKelasId
     );
-    const canDelete = slotsForActiveDay.length > 1;
+
+    const canDelete = slotsForActiveDayAndKelas.length > 1;
 
     const mapelOptions = [
         { value: "istirahat", label: "-- Istirahat --" },
@@ -167,6 +194,38 @@ const JadwalSesi = ({
                     Isi Otomatis
                 </Button>
             </div>
+
+            {uniqueClasses.length > 0 && (
+                <div className="border-b border-gray-200 mb-4">
+                    <nav
+                        className="-mb-px flex space-x-2 md:space-x-3 overflow-x-auto"
+                        aria-label="Kelas"
+                    >
+                        {uniqueClasses.map(({ kelas, academic_year }) => (
+                            <button
+                                key={kelas.id}
+                                type="button"
+                                onClick={() => setActiveKelasId(kelas.id)}
+                                className={`relative whitespace-nowrap py-3 px-2 text-center font-medium text-sm ${
+                                    activeKelasId === kelas.id
+                                        ? "text-indigo-600"
+                                        : "text-gray-500 hover:text-gray-700"
+                                }`}
+                            >
+                                <span>
+                                    {`${kelas.nama_kelas} ${kelas.kelompok}`}{" "}
+                                    {academic_year.year}
+                                </span>
+
+                                {activeKelasId === kelas.id && (
+                                    <div className="absolute bottom-0 left-0 w-full h-1.5 bg-indigo-500 rounded-t-3xl" />
+                                )}
+                            </button>
+                        ))}
+                    </nav>
+                </div>
+            )}
+
             <div ref={navRef} className="border-b border-gray-200">
                 <nav
                     className="-mb-px flex space-x-2 md:space-x-3 overflow-x-auto"
@@ -193,7 +252,7 @@ const JadwalSesi = ({
             </div>
 
             <div className="mt-6 space-y-4">
-                {slotsForActiveDay.map((slot) => {
+                {slotsForActiveDayAndKelas.map((slot) => {
                     const originalIndex = jadwalSlots.findIndex(
                         (s) => s === slot
                     );

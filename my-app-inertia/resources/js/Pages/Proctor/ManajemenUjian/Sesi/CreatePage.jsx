@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import PageContent from "@/Components/ui/page-content";
 import HeaderContent from "@/Components/ui/header-content";
 import Button from "@/Components/ui/button";
@@ -25,6 +25,28 @@ const CreatePage = () => {
         (r) => r.id === formData.ruangan_id
     );
     const kapasitasRuangan = selectedRuangan ? selectedRuangan.kapasitas : 0;
+
+    const uniqueClasses = useMemo(() => {
+        if (!formData.peserta_ids || !masterData.allSiswa) {
+            return [];
+        }
+
+        const selectedSiswa = masterData.allSiswa.filter((siswa) =>
+            formData.peserta_ids.includes(siswa.id)
+        );
+
+        const kelasMap = new Map();
+        selectedSiswa.forEach((siswa) => {
+            if (siswa.kelas && !kelasMap.has(siswa.kelas.id)) {
+                kelasMap.set(siswa.kelas.id, {
+                    kelas: siswa.kelas,
+                    academic_year: siswa.academic_year,
+                });
+            }
+        });
+
+        return Array.from(kelasMap.values());
+    }, [formData.peserta_ids, masterData.allSiswa]);
 
     const breadcrumbItems = [
         { label: "Sesi Ujian", href: route("sesi-ujian.index") },
@@ -58,19 +80,20 @@ const CreatePage = () => {
                     errors={errors}
                 />
 
-                <JadwalSesi
-                    jadwalSlots={formData.jadwal_slots}
-                    setFormData={setFormData}
-                    masterMapels={masterData.mapels}
-                    masterPengawas={masterData.pengawas}
-                    errors={errors}
-                />
-
                 <PesertaSesi
                     allSiswa={masterData.allSiswa}
                     selectedIds={formData.peserta_ids}
                     onFormChange={handleFormChange}
                     kapasitas={kapasitasRuangan}
+                    errors={errors}
+                />
+
+                <JadwalSesi
+                    jadwalSlots={formData.jadwal_slots}
+                    setFormData={setFormData}
+                    masterMapels={masterData.mapels}
+                    masterPengawas={masterData.pengawas}
+                    uniqueClasses={uniqueClasses}
                     errors={errors}
                 />
 

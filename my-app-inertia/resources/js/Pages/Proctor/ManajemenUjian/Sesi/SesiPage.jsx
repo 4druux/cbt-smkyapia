@@ -9,7 +9,7 @@ import { useSesiUjian } from "@/Hooks/manajemen-ujian/use-sesi-ujian";
 import SesiUjianTable from "@/Components/manajemen-ujian/sesi/sesi-ujian-table";
 import SesiUjianCard from "@/Components/manajemen-ujian/sesi/sesi-ujian-card";
 
-const IndexPage = () => {
+const SesiPage = () => {
     const { sesiUjians, isLoading, error, handleDelete } = useSesiUjian();
 
     const breadcrumbItems = [{ label: "Sesi Ujian", href: "#" }];
@@ -75,4 +75,4 @@ const IndexPage = () => {
     );
 };
 
-export default IndexPage;
+export default SesiPage;

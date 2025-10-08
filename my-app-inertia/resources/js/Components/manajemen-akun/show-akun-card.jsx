@@ -44,9 +44,9 @@ const ShowAkunCard = ({
                                     )}
                                     <div className="flex flex-col text-sm font-medium">
                                         <span className="font-normal">
-                                            {isSiswa ? "NIS: " : "Email: "}
+                                            {isSiswa ? "No Peserta: " : "Email: "}
                                         </span>
-                                        {isSiswa ? user.nis : user.email}
+                                        {isSiswa ? user.no_peserta : user.email}
                                     </div>
                                 </div>
 

@@ -82,20 +82,16 @@ const Sidebar = ({ isOpen }) => {
                     href: "/kelola-mapel",
                 },
                 {
+                    id: "kelola-soal",
+                    label: "Kelola Soal",
+                    href: "/kelola-soal",
+                },
+                {
                     id: "kelola-pengawas",
                     label: "Kelola Pengawas",
                     href: "/kelola-pengawas",
                 },
             ],
-        },
-        {
-            id: "kelola-ujian",
-            label: "Ujian Online",
-            icon: ClipboardList,
-            description: "Kelola Ujian Online",
-            href: "/kelola-ujian",
-            canView:
-                auth.user && hasAccess(["superadmin", "admin", "pengawas"]),
         },
         {
             id: "ujian-online",
@@ -183,7 +179,7 @@ const Sidebar = ({ isOpen }) => {
                     <hr className="mt-4" />
                 </div>
 
-                <nav className="flex-1 p-2 md:p-5 overflow-y-auto">
+                <nav className="flex-1 pr-5 py-5 overflow-y-auto">
                     <AnimatePresence>
                         {isOpen && (
                             <motion.ul
@@ -210,7 +206,7 @@ const Sidebar = ({ isOpen }) => {
                                                 variants={itemVariants}
                                             >
                                                 <div
-                                                    className={`w-full flex items-center border-l-4 justify-between p-3 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
+                                                    className={`w-full flex items-center justify-between p-3 rounded-r-full border-r border-y transition-all duration-200 text-left cursor-pointer group ${
                                                         isParentActive
                                                             ? "bg-indigo-100 border-indigo-500"
                                                             : "text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-transparent"
@@ -306,13 +302,13 @@ const Sidebar = ({ isOpen }) => {
                                                                                 href={
                                                                                     subItem.href
                                                                                 }
-                                                                                className={`w-full flex p-2 items-center rounded-lg text-left ${
+                                                                                className={`w-full flex p-2 items-center rounded-full text-left ${
                                                                                     isSubActive
-                                                                                        ? "bg-indigo-100 text-indigo-600 font-medium"
+                                                                                        ? "bg-indigo-100 text-indigo-600 font-medium border-indigo-400 border"
                                                                                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-800 hover:translate-x-1 transition-transform duration-300 will-change-transform"
                                                                                 }`}
                                                                             >
-                                                                                <span className="text-sm">
+                                                                                <span className="text-sm ml-2">
                                                                                     {
                                                                                         subItem.label
                                                                                     }
@@ -337,7 +333,7 @@ const Sidebar = ({ isOpen }) => {
                                         >
                                             <Link
                                                 href={item.href}
-                                                className={`w-full flex items-center border-l-4 space-x-2 p-3 rounded-lg transition-all duration-200 text-left cursor-pointer group ${
+                                                className={`w-full flex items-center space-x-2 p-3 rounded-r-full border-r border-y transition-all duration-200 text-left cursor-pointer group ${
                                                     isActive
                                                         ? "bg-indigo-100 border-indigo-500"
                                                         : "text-gray-600 hover:bg-gray-50 hover:text-gray-800 border-transparent"

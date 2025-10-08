@@ -7,7 +7,7 @@ import DotLoader from "@/Components/ui/dot-loader";
 import Button from "@/Components/ui/button";
 import ShowAkunTable from "@/Components/manajemen-akun/show-akun-table";
 import ShowAkunCard from "@/Components/manajemen-akun/show-akun-card";
-import { useShowAccount } from "@/Hooks/useShowAccount";
+import { useShowAccount } from "@/Hooks/use-show-account";
 import ResetPasswordModal from "@/Components/manajemen-akun/reset-password-modal";
 import SearchBar from "@/Components/ui/search-bar";
 
@@ -85,22 +85,21 @@ const ShowAccount = () => {
             breadcrumbItems={breadcrumbItems}
             pageClassName="mt-4"
         >
-            <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between mb-6 lg:gap-4">
+            <div className="flex flex-col xl:flex-row xl:items-start xl:justify-between mb-6 xl:gap-4">
                 <HeaderContent
                     Icon={account.IconComponent}
                     title={`Daftar Akun ${account.title}`}
                     description={`Kelola semua akun ${role} yang terdaftar di sistem.`}
                 />
 
-                <div className="flex justify-end flex-shrink-0">
                     <SearchBar
                         value={searchTerm}
                         onChange={handleSearchChange}
                         onClear={handleClearSearch}
-                        placeholder="Cari Nama, Email, atau NIS..."
-                        className="max-w-xs"
+                        placeholder="Cari Nama, Email, atau No Peserta..."
+                        className="max-w-sm"
                     />
-                </div>
+             
             </div>
 
             {needsApproval && pendingUsers.length > 0 && (
@@ -167,7 +166,7 @@ const ShowAccount = () => {
                     </>
                 ) : (
                     <DataNotFound
-                        message={`Belum ada pengguna ${role} yang aktif.`}
+                        message={`Belum ada pengguna ${role}.`}
                     />
                 )}
             </div>

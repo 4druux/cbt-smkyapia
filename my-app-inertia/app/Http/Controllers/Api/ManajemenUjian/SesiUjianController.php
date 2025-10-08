@@ -1,8 +1,9 @@
 <?php
 
-namespace App\Http\Controllers\Api\ManajemenRuangan;
+namespace App\Http\Controllers\Api\ManajemenUjian;
 
 use App\Http\Controllers\Controller;
+use App\Models\Ruangan;
 use App\Models\SesiUjian;
 use App\Models\Siswa;
 use App\Models\User;
@@ -20,7 +21,8 @@ class SesiUjianController extends Controller
             'academicYear',
             'pesertas',
             'jadwalSlots.mataPelajaran',
-            'jadwalSlots.pengawas'
+            'jadwalSlots.pengawas',
+            'jadwalSlots.kelas'
         ])
         ->orderBy('created_at', 'desc')
         ->get();
@@ -35,10 +37,10 @@ class SesiUjianController extends Controller
             'academic_year_id' => 'required|exists:academic_years,id',
             'semester' => 'required|in:ganjil,genap',
             'jenis_asesmen' => 'required|in:asts,asas',
-           'tanggal_mulai' => [
+            'tanggal_mulai' => [
                 'required',
                 'date',
-                function ($attribute, $value, $fail) use ($request) {
+                function ( $value, $fail) use ($request) {
                     $ruanganId = $request->input('ruangan_id');
                     $tanggalMulai = $value;
                     $tanggalSelesai = $request->input('tanggal_selesai');
@@ -63,31 +65,71 @@ class SesiUjianController extends Controller
                 },
             ],
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'peserta_ids' => 'required|array|min:1',
+            'peserta_ids' => [
+                'required',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    $ruanganId = $request->input('ruangan_id');
+                    if (!$ruanganId) {
+                        return;
+                    }
+
+                    $ruangan = Ruangan::find($ruanganId);
+                    if (!$ruangan || $ruangan->kapasitas <= 0) {
+                        return;
+                    }
+
+                    $jumlahPeserta = count($value);
+                    if ($jumlahPeserta > $ruangan->kapasitas) {
+                        $fail("Jumlah peserta melebihi kapasitas ruangan.");
+                    }
+                },
+            ],
             'peserta_ids.*' => 'exists:siswas,id',
             'jadwal_slots' => 'present|array',
             'jadwal_slots.*.hari' => ['required', 'string', 'max:255'],
             'jadwal_slots.*.waktu_mulai' => 'required|date_format:H:i',
             'jadwal_slots.*.waktu_selesai' => 'required|date_format:H:i|after:jadwal_slots.*.waktu_mulai',
-            'jadwal_slots.*.mata_pelajaran_id' => ['nullable'],
-            'jadwal_slots.*.pengawas_id' => ['nullable', 'exists:users,id'],
+            'jadwal_slots.*.kelas_id' => ['required', 'exists:kelas,id'],
+            'jadwal_slots.*.mata_pelajaran_id' => ['required'],
+            'jadwal_slots.*.pengawas_id' => [
+                'required_unless:jadwal_slots.*.mata_pelajaran_id,istirahat',
+                'nullable',
+                'exists:users,id'
+            ],
         ]);
 
         $sesiUjian = DB::transaction(function () use ($validated) {
             $sesiData = Arr::except($validated, ['peserta_ids', 'jadwal_slots']);
             $newSesiUjian = SesiUjian::create($sesiData);
 
+            $sequenceCounters = [];
             $userIdsToSync = [];
             foreach ($validated['peserta_ids'] as $siswaId) {
-                $siswa = Siswa::find($siswaId);
+                $siswa = Siswa::with('kelas.jurusan')->find($siswaId);
                 if (!$siswa) continue;
 
                 if (is_null($siswa->user_id)) {
+
+                    $kelas = $siswa->kelas;
+                    $jurusan = $kelas->jurusan;
+                    $classIdentifier = preg_replace('/\s+/', '', $kelas->nama_kelas) . $jurusan->kode_jurusan . $kelas->kelompok;
+
+                    if (!isset($sequenceCounters[$classIdentifier])) {
+                        $sequenceCounters[$classIdentifier] = 1;
+                    } else {
+                        $sequenceCounters[$classIdentifier]++;
+                    }
+                    $sequenceNumber = $sequenceCounters[$classIdentifier];
+                    $formattedSequence = str_pad($sequenceNumber, 2, '0', STR_PAD_LEFT);
+                    $assessmentType = strtoupper($validated['jenis_asesmen']);
+                    $noPeserta = "{$classIdentifier}.{$assessmentType}.{$formattedSequence}";
                     $newUser = User::create([
                         'name' => $siswa->nama,
                         'email' => $siswa->nis,
-                        'nis' => $siswa->nis,
-                        'password' => Hash::make($siswa->nis),
+                        'no_peserta' => $noPeserta,
+                        'password' => Hash::make($noPeserta),
                         'role' => 'siswa',
                         'approved_at' => now(),
                     ]);
@@ -112,7 +154,7 @@ class SesiUjianController extends Controller
             return $newSesiUjian;
         });
 
-        $sesiUjian->load(['ruangan', 'pesertas', 'jadwalSlots.mataPelajaran', 'jadwalSlots.pengawas']);
+        $sesiUjian->load(['ruangan', 'pesertas', 'jadwalSlots.mataPelajaran', 'jadwalSlots.pengawas', 'jadwalSlots.kelas']);
 
         return response()->json([
             'message' => 'Sesi ujian berhasil dibuat.',
@@ -122,7 +164,7 @@ class SesiUjianController extends Controller
 
     public function show(SesiUjian $sesiUjian)
     {
-        $sesiUjian->load(['ruangan', 'academicYear', 'jadwalSlots.mataPelajaran', 'jadwalSlots.pengawas']);
+        $sesiUjian->load(['ruangan', 'academicYear', 'jadwalSlots.mataPelajaran', 'jadwalSlots.pengawas', 'jadwalSlots.kelas']);
         $pesertaUsers = $sesiUjian->pesertas()->get();
 
         $selectedSiswaIds = $pesertaUsers->map(function ($user) {
@@ -146,7 +188,7 @@ class SesiUjianController extends Controller
             'tanggal_mulai' => [
                 'required',
                 'date',
-                function ($attribute, $value, $fail) use ($request) {
+                function ($attribute, $value, $fail) use ($request, $sesiUjian) { 
                     $ruanganId = $request->input('ruangan_id');
                     $tanggalMulai = $value;
                     $tanggalSelesai = $request->input('tanggal_selesai');
@@ -156,14 +198,11 @@ class SesiUjianController extends Controller
                     }
 
                     $konflik = SesiUjian::where('ruangan_id', $ruanganId)
+                    ->where('id', '!=', $sesiUjian->id)
                     ->where(function ($query) use ($tanggalMulai, $tanggalSelesai) {
-                        $query->where('tanggal_mulai', '<=', $tanggalSelesai)
+                            $query->where('tanggal_mulai', '<=', $tanggalSelesai)
                             ->where('tanggal_selesai', '>=', $tanggalMulai);
                         });
-
-                    if ($request->route('sesi_ujian')) {
-                        $konflik->where('id', '!=', $request->route('sesi_ujian')->id);
-                    }
 
                     if ($konflik->exists()) {
                         $fail('Ruangan ini sudah terjadwal pada rentang tanggal tersebut.');
@@ -171,46 +210,99 @@ class SesiUjianController extends Controller
                 },
             ],
             'tanggal_selesai' => 'required|date|after_or_equal:tanggal_mulai',
-            'peserta_ids' => 'required|array|min:1',
+            'peserta_ids' => [
+                'required',
+                'array',
+                'min:1',
+                function ($attribute, $value, $fail) use ($request) {
+                    $ruanganId = $request->input('ruangan_id');
+                    if (!$ruanganId) {
+                        return;
+                    }
+
+                    $ruangan = Ruangan::find($ruanganId);
+                    if (!$ruangan || $ruangan->kapasitas <= 0) {
+                        return;
+                    }
+                    
+                    $jumlahPeserta = count($value);
+                    if ($jumlahPeserta > $ruangan->kapasitas) {
+                        $fail("Jumlah peserta melebihi kapasitas ruangan.");
+                    }
+                },
+            ],
             'peserta_ids.*' => 'exists:siswas,id',
             'jadwal_slots' => 'present|array',
             'jadwal_slots.*.hari' => ['required', 'string', 'max:255'],
             'jadwal_slots.*.waktu_mulai' => 'required|date_format:H:i',
             'jadwal_slots.*.waktu_selesai' => 'required|date_format:H:i|after:jadwal_slots.*.waktu_mulai',
-            'jadwal_slots.*.mata_pelajaran_id' => ['nullable'],
-            'jadwal_slots.*.pengawas_id' => ['nullable', 'exists:users,id'],
+            'jadwal_slots.*.kelas_id' => ['required', 'exists:kelas,id'],
+            'jadwal_slots.*.mata_pelajaran_id' => ['required'],
+            'jadwal_slots.*.pengawas_id' => [
+                'required_unless:jadwal_slots.*.mata_pelajaran_id,istirahat',
+                'nullable',
+                'exists:users,id'
+            ],
         ]);
 
         DB::transaction(function () use ($validated, $sesiUjian) {
             $sesiData = Arr::except($validated, ['peserta_ids', 'jadwal_slots']);
             $sesiUjian->update($sesiData);
 
-            $userIdsToSync = [];
+            $currentUserIds = $sesiUjian->pesertas()->pluck('users.id');
+
+            $sequenceCounters = [];
+            $finalUserIds = [];
             foreach ($validated['peserta_ids'] as $siswaId) {
-                $siswa = Siswa::find($siswaId);
+                $siswa = Siswa::with('kelas.jurusan')->find($siswaId);
                 if (!$siswa) continue;
-                 if (is_null($siswa->user_id)) {
+
+                if (is_null($siswa->user_id)) {
+                    $kelas = $siswa->kelas;
+                    $jurusan = $kelas->jurusan;
+                    $classIdentifier = preg_replace('/\s+/', '', $kelas->nama_kelas) . $jurusan->kode_jurusan . $kelas->kelompok;
+
+                    if (!isset($sequenceCounters[$classIdentifier])) {
+                        $sequenceCounters[$classIdentifier] = 1;
+                    } else {
+                        $sequenceCounters[$classIdentifier]++;
+                    }
+
+                    $sequenceNumber = $sequenceCounters[$classIdentifier];
+                    $formattedSequence = str_pad($sequenceNumber, 2, '0', STR_PAD_LEFT);
+                    $assessmentType = strtoupper($validated['jenis_asesmen']);
+                    $noPeserta = "{$classIdentifier}.{$assessmentType}.{$formattedSequence}";
+
                     $newUser = User::create([
                         'name' => $siswa->nama,
                         'email' => $siswa->nis,
-                        'nis' => $siswa->nis,
-                        'password' => Hash::make($siswa->nis),
+                        'no_peserta' => $noPeserta,
+                        'password' => Hash::make($noPeserta),
                         'role' => 'siswa',
                         'approved_at' => now(),
                     ]);
+
                     $siswa->user_id = $newUser->id;
                     $siswa->save();
-                    $userIdsToSync[] = $newUser->id;
+                    $finalUserIds[] = $newUser->id;
                 } else {
-                    $userIdsToSync[] = $siswa->user_id;
+                    $finalUserIds[] = $siswa->user_id;
                 }
             }
-            $sesiUjian->pesertas()->sync($userIdsToSync);
+
+            $userIdsToDelete = $currentUserIds->diff($finalUserIds);
+
+            if ($userIdsToDelete->isNotEmpty()) {
+                Siswa::whereIn('user_id', $userIdsToDelete)->update(['user_id' => null]);
+                User::whereIn('id', $userIdsToDelete)->delete();
+            }
+
+            $sesiUjian->pesertas()->sync($finalUserIds);
 
             $sesiUjian->jadwalSlots()->delete();
             if (!empty($validated['jadwal_slots'])) {
                 foreach ($validated['jadwal_slots'] as $slotData) {
-                     if (isset($slotData['mata_pelajaran_id']) && $slotData['mata_pelajaran_id'] === 'istirahat') {
+                    if (isset($slotData['mata_pelajaran_id']) && $slotData['mata_pelajaran_id'] === 'istirahat') {
                         $slotData['mata_pelajaran_id'] = null;
                         $slotData['pengawas_id'] = null;
                     }
@@ -221,13 +313,24 @@ class SesiUjianController extends Controller
 
         return response()->json([
             'message' => 'Sesi ujian berhasil diperbarui.',
-            'data' => $sesiUjian->load(['ruangan', 'pesertas', 'jadwalSlots.mataPelajaran', 'jadwalSlots.pengawas'])
+            'data' => $sesiUjian->load(['ruangan', 'pesertas', 'jadwalSlots.mataPelajaran', 'jadwalSlots.pengawas', 'jadwalSlots.kelas'])
         ]);
     }
 
     public function destroy(SesiUjian $sesiUjian)
     {
-        $sesiUjian->delete();
+        DB::transaction(function () use ($sesiUjian) {
+            $pesertaUsers = $sesiUjian->pesertas;
+
+            foreach ($pesertaUsers as $user) {
+                if ($user->sesiUjians()->count() === 1) {
+                    Siswa::where('user_id', $user->id)->update(['user_id' => null]);
+                    $user->delete();
+                }
+            }
+            $sesiUjian->delete();
+        });
+
         return response()->json(['message' => 'Sesi ujian berhasil dihapus.']);
     }
 }
